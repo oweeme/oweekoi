@@ -1,0 +1,13 @@
+{
+  "KPackageStructure": "Wallpaper/Images",
+  "KPlugin": {
+    "Id": "OweeKoi-tres-kois",
+    "Name": "Owee Koi - Tres kois",
+    "Authors": [
+      {
+        "Name": "Owee"
+      }
+    ],
+    "License": "GPL-3.0+"
+  }
+}

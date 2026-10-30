@@ -1,0 +1,13 @@
+{
+  "KPackageStructure": "Wallpaper/Images",
+  "KPlugin": {
+    "Id": "OweeKoi-estanque",
+    "Name": "Owee Koi - Estanque",
+    "Authors": [
+      {
+        "Name": "Owee"
+      }
+    ],
+    "License": "GPL-3.0+"
+  }
+}
