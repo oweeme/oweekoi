@@ -75,10 +75,12 @@ inactiveForeground={rgb(P['suave'])}
 
 
 def comprobar(nombre, P):
-    pares = [("texto", "base"), ("texto", "vista"), ("texto", "elevado"), ("suave", "base"),
-             ("acento", "base"), ("sobre_seleccion", "seleccion"), ("enlace", "base"),
-             ("positivo", "base"), ("neutro", "base")]
-    malos = [(a, b, round(contraste(P[a], P[b]), 2)) for a, b in pares if contraste(P[a], P[b]) < 4.5]
+    pares = [("texto", "base", 4.5), ("texto", "vista", 4.5), ("texto", "elevado", 4.5),
+             ("suave", "base", 4.5), ("sobre_seleccion", "seleccion", 4.5), ("enlace", "base", 4.5),
+             ("positivo", "base", 4.5), ("neutro", "base", 4.5),
+             ("acento", "base", 3.0)]  # el acento es un borde/relleno, no texto: basta 3:1
+    malos = [(a, b, round(contraste(P[a], P[b]), 2)) for a, b, minimo in pares
+             if contraste(P[a], P[b]) < minimo]
     return nombre, malos
 
 
