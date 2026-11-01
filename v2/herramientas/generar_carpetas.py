@@ -60,6 +60,37 @@ USO = {
     "inode-directory": ("azul", ""),
 }
 
+# Carpetas "por nombre": KDE busca folder-<nombre> segun como se llame la carpeta (Android,
+# Dev...) o el icono que alguien eligio en su .directory. Se cubren todos los nombres que usan
+# WhiteSur y Breeze para que ninguno caiga a un icono de otro estilo o a uno generico.
+GLIFOS.update({
+    "codigo": '<path d="M28 33l-5 5 5 5M36 33l5 5-5 5M33.5 31l-3 14" stroke-width="1.9"/>',
+    "android": '<path d="M24.5 42a7.5 7.5 0 0 1 15 0z"/><path d="M27 34l-2-3M37 34l2-3"/><circle cx="29.2" cy="39" r=".9" fill="currentColor" stroke="none"/><circle cx="34.8" cy="39" r=".9" fill="currentColor" stroke="none"/>',
+    "qt": '<rect x="23" y="28" width="18" height="18" rx="4.5"/><circle cx="32" cy="36.2" r="4"/><path d="M33.6 38.4l3.2 3.6"/>',
+    "rama": '<circle cx="27" cy="31.5" r="2"/><circle cx="27" cy="45" r="2"/><circle cx="37.5" cy="36" r="2"/><path d="M27 33.5v9.5M27 41.5c0-4.5 10.5-2 10.5-3.5"/>',
+})
+GRUPOS = {
+    # color: nombres (sin el prefijo folder-)
+    "rojo": "red", "amarillo": "yellow",
+    "verde": "green build development extension flatpak godot java library projects script snap "
+             "steam vbox wine windows mac blender docker deb rpm appimage tar torrent games "
+             "download-open downloads",
+    "turquesa": "cyan desktop public publicshare network remote remote-ftp remote-nfs remote-smb "
+                "remote-ssh remote-open cloud gdrive dropbox onedrive owncloud",
+    "azul": "blue activities bookmarks bookmark book calculate chart comic database decrypted "
+            "documents-open encrypted favorites home important language locked log mail notes "
+            "open presentation print recent sign table text txt unlocked visiting html",
+    "violeta": "violet magenta videos-open video videos videocamera",
+    "rosa": "music music-open sound podcast",
+    "gris": "publicshare-open black grey root temp trash crash templates-open drag-accept tab",
+    "naranja": "orange brown camera design drawing image image-people images paint photo photos "
+               "picture pictures-open",
+}
+# nombres que ademas llevan simbolo
+SIMBOLOS = {"code": "codigo", "development": "codigo", "android": "android", "qt": "qt",
+            "git": "rama", "github": "rama"}
+EXTRA = {"android": "verde", "qt": "verde", "code": "verde", "git": "verde", "github": "verde"}
+
 INDEX = """[Icon Theme]
 Name=OweeKoi
 Comment=Carpetas de colores suaves y mate de OweeKoi
@@ -100,4 +131,16 @@ if __name__ == "__main__":
     # carpetas del sistema, cada una con su color y su simbolo
     for icono, (color, glifo) in USO.items():
         (SALIDA / f"{icono}.svg").write_text(svg(color_carpeta(color), glifo), encoding="utf-8")
+    # el resto de nombres que KDE puede pedir (por carpeta o por .directory)
+    for color, nombres in GRUPOS.items():
+        for n in nombres.split():
+            icono = f"folder-{n}"
+            if icono in USO or (SALIDA / f"{icono}.svg").exists():
+                continue
+            (SALIDA / f"{icono}.svg").write_text(
+                svg(color_carpeta(color), SIMBOLOS.get(n, "")), encoding="utf-8")
+    for n, color in EXTRA.items():
+        icono = f"folder-{n}"
+        (SALIDA / f"{icono}.svg").write_text(
+            svg(color_carpeta(color), SIMBOLOS.get(n, "")), encoding="utf-8")
     print(f"{len(list(SALIDA.glob('*.svg')))} iconos en {RAIZ}")
