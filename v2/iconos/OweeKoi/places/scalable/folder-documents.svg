@@ -1,0 +1,12 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="64" height="64" viewBox="0 0 64 64">
+  <defs>
+    <linearGradient id="frente" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#76acd1"/>
+      <stop offset="1" stop-color="#6ca6ce"/>
+    </linearGradient>
+  </defs>
+  <path d="M8 14a4 4 0 0 1 4-4h12.6a4 4 0 0 1 2.9 1.2l2.6 2.8H52a4 4 0 0 1 4 4v8H8z" fill="#527e9d"/>
+  <rect x="6" y="19" width="52" height="35" rx="5" fill="url(#frente)"/>
+  <rect x="6" y="19" width="52" height="35" rx="5" fill="none" stroke="#314b5d" stroke-opacity=".25"/>
+  <g fill="none" stroke="#3f6077" stroke-opacity=".62" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="25" y="28" width="14" height="18" rx="2"/><path d="M28.5 34h7M28.5 38h7M28.5 42h4" stroke-width="1.8"/></g>
+</svg>

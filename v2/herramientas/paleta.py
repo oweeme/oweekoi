@@ -11,15 +11,15 @@ import math
 # inversion uno del otro. El verde lima y el coral del koi son los unicos acentos.
 # acento_kde es el AccentColor de Plasma (el que eligio el autor): se escribe en el esquema.
 OSCURO = dict(
-    base="#232122", vista="#1b1a1b", superficie="#2a2829", elevado="#323031", borde="#4a4647",
-    texto="#ece6d6", suave="#b0a99a", acento="#6fd45c", acento_kde="#3dd425",
-    seleccion="#75de61", sobre_seleccion="#0f1d0b",
+    base="#2d2a2c", vista="#262325", superficie="#353234", elevado="#3d3a3c", borde="#55514f",
+    texto="#ece6d6", suave="#b8b0a1", acento="#93cf9b", acento_kde="#8cc093",
+    seleccion="#8cc093", sobre_seleccion="#0f1d0b",
     coral="#f58a76", positivo="#7bd88f", neutro="#e8b65c", enlace="#7cb9f0", visitado="#b5a8f0",
 )
 CLARO = dict(
     base="#f2eee2", vista="#faf7ee", superficie="#ebe6d6", elevado="#fffdf7", borde="#d6cfbb",
-    texto="#252223", suave="#5f5a55", acento="#2c991a", acento_kde="#3dd425",
-    seleccion="#75de61", sobre_seleccion="#0f1d0b",
+    texto="#252223", suave="#5f5a55", acento="#488c54", acento_kde="#9cd5a3",
+    seleccion="#9cd5a3", sobre_seleccion="#0f1d0b",
     coral="#c9412c", positivo="#2b7a4b", neutro="#8f5f00", enlace="#1d62a0", visitado="#6a54b8",
 )
 
@@ -28,7 +28,7 @@ CARPETAS = {
     "rojo": 25, "naranja": 55, "amarillo": 95, "verde": 150,
     "turquesa": 185, "azul": 240, "violeta": 290, "rosa": 350,
 }
-L_CARPETA, C_CARPETA = 0.72, 0.115
+L_CARPETA, C_CARPETA = 0.70, 0.085   # mate y suave: sin brillo que canse
 
 
 def a_rgb(h):
