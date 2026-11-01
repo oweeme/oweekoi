@@ -1,0 +1,57 @@
+[Desktop Entry]
+Type=Service
+Name=Color de carpeta
+MimeType=inode/directory;
+Actions=rojo;naranja;amarillo;verde;turquesa;azul;violeta;rosa;gris;quitar;
+X-KDE-Submenu=Color de carpeta
+Icon=folder-owee-azul
+
+[Desktop Action rojo]
+Name=Rojo
+Icon=folder-owee-rojo
+Exec=owee-carpeta rojo %F
+
+[Desktop Action naranja]
+Name=Naranja
+Icon=folder-owee-naranja
+Exec=owee-carpeta naranja %F
+
+[Desktop Action amarillo]
+Name=Amarillo
+Icon=folder-owee-amarillo
+Exec=owee-carpeta amarillo %F
+
+[Desktop Action verde]
+Name=Verde
+Icon=folder-owee-verde
+Exec=owee-carpeta verde %F
+
+[Desktop Action turquesa]
+Name=Turquesa
+Icon=folder-owee-turquesa
+Exec=owee-carpeta turquesa %F
+
+[Desktop Action azul]
+Name=Azul
+Icon=folder-owee-azul
+Exec=owee-carpeta azul %F
+
+[Desktop Action violeta]
+Name=Violeta
+Icon=folder-owee-violeta
+Exec=owee-carpeta violeta %F
+
+[Desktop Action rosa]
+Name=Rosa
+Icon=folder-owee-rosa
+Exec=owee-carpeta rosa %F
+
+[Desktop Action gris]
+Name=Gris
+Icon=folder-owee-gris
+Exec=owee-carpeta gris %F
+
+[Desktop Action quitar]
+Name=Quitar color
+Icon=edit-clear
+Exec=owee-carpeta quitar %F

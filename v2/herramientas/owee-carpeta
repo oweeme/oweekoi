@@ -1,0 +1,32 @@
+#!/usr/bin/env bash
+# owee-carpeta - pone (o quita) un color a una carpeta, para ubicarla de un vistazo.
+#
+# Uso: owee-carpeta <color|quitar> <carpeta>...
+#   colores: rojo naranja amarillo verde turquesa azul violeta rosa gris
+#
+# Funciona con el archivo ".directory" que KDE lee dentro de cada carpeta (clave Icon).
+# Las carpetas con color usan los iconos folder-owee-<color> del tema OweeKoi.
+# Se lanza desde el menu de clic derecho de Dolphin ("Color de carpeta").
+# Nota: .directory es un archivo oculto dentro de la carpeta; el .gitignore global de
+# OweeKoi ya lo ignora, asi que no ensucia tus repositorios.
+set -euo pipefail
+
+color="${1:-}"; shift || true
+[ -n "$color" ] && [ $# -gt 0 ] || { sed -n '2,10p' "$0" | sed 's/^# \{0,1\}//'; exit 1; }
+case "$color" in
+  rojo|naranja|amarillo|verde|turquesa|azul|violeta|rosa|gris|quitar) ;;
+  *) echo "Color desconocido: $color" >&2; exit 1 ;;
+esac
+
+for d in "$@"; do
+  [ -d "$d" ] || { echo "No es una carpeta: $d" >&2; continue; }
+  f="$d/.directory"
+  if [ "$color" = quitar ]; then
+    [ -f "$f" ] || continue
+    kwriteconfig6 --file "$f" --group "Desktop Entry" --key Icon --delete
+    # si no queda nada util, se borra el archivo vacio
+    grep -qE '^[A-Za-z]' <(grep -v '^\[' "$f" | grep -v '^\s*$' || true) || rm -f "$f"
+  else
+    kwriteconfig6 --file "$f" --group "Desktop Entry" --key Icon "folder-owee-$color"
+  fi
+done

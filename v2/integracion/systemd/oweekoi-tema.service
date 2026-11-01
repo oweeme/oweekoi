@@ -1,0 +1,6 @@
+[Unit]
+Description=OweeKoi: modo claro u oscuro segun la hora
+
+[Service]
+Type=oneshot
+ExecStart=%h/.local/bin/owee-tema auto

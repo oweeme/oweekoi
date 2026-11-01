@@ -1,0 +1,39 @@
+#!/usr/bin/env bash
+# owee-tema - cambia OweeKoi entre claro y oscuro.
+#
+# Uso: owee-tema claro | oscuro | auto | alternar | estado
+#   auto      claro de dia, oscuro de noche, segun ~/.config/oweekoi/horario.conf
+#   estado    muestra el modo actual y el que tocaria ahora
+#
+# Horario (por defecto 07:00 a 19:00 claro): crea ~/.config/oweekoi/horario.conf con
+#   AMANECER=07:00
+#   ANOCHECER=19:00
+# Solo cambia el esquema de color; no toca nada mas. Si ya esta bien, no hace nada
+# (asi no hay parpadeos al repetirlo cada pocos minutos).
+set -euo pipefail
+
+CLARO=OweeKoiLight
+OSCURO=OweeKoiDark
+AMANECER=07:00
+ANOCHECER=19:00
+CONF="${XDG_CONFIG_HOME:-$HOME/.config}/oweekoi/horario.conf"
+# shellcheck disable=SC1090
+[ -f "$CONF" ] && . "$CONF"
+
+actual="$(kreadconfig6 --file kdeglobals --group General --key ColorScheme)"
+
+hhmm() { local h="${1%%:*}" m="${1##*:}"; echo $((10#$h * 60 + 10#$m)); }
+ahora="$(hhmm "$(date +%H:%M)")"
+if [ "$ahora" -ge "$(hhmm "$AMANECER")" ] && [ "$ahora" -lt "$(hhmm "$ANOCHECER")" ]; then
+  toca="$CLARO"; else toca="$OSCURO"; fi
+
+case "${1:-auto}" in
+  claro) deseado="$CLARO" ;;
+  oscuro) deseado="$OSCURO" ;;
+  auto) deseado="$toca" ;;
+  alternar) [ "$actual" = "$OSCURO" ] && deseado="$CLARO" || deseado="$OSCURO" ;;
+  estado) echo "actual: $actual · segun la hora tocaria: $toca ($AMANECER-$ANOCHECER claro)"; exit 0 ;;
+  *) sed -n '2,11p' "$0" | sed 's/^# \{0,1\}//'; exit 1 ;;
+esac
+
+[ "$actual" = "$deseado" ] || plasma-apply-colorscheme "$deseado" >/dev/null

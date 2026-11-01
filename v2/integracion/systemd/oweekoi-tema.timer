@@ -1,0 +1,10 @@
+[Unit]
+Description=OweeKoi: revisa cada 10 minutos si toca claro u oscuro
+
+[Timer]
+OnStartupSec=30s
+OnCalendar=*:0/10
+Persistent=true
+
+[Install]
+WantedBy=timers.target
