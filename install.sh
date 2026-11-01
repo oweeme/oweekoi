@@ -17,6 +17,7 @@ WS_CURSORS=(https://github.com/vinceliuice/WhiteSur-cursors.git e190baf618ed95ee
 PERFIL=auto
 WHITESUR=1
 DOCK=1
+BARRA=1
 ENERGIA=1
 BALOO=1
 APLICAR=1
@@ -32,6 +33,7 @@ Uso: ./install.sh [opciones]
                             detecta si hay bateria)
   --sin-whitesur            No descarga WhiteSur (queda Breeze oscuro + iconos propios)
   --sin-dock                No crea el dock flotante inferior
+  --sin-barra               No cambia la barra superior (menu global y reloj centrado)
   --sin-energia             No toca la configuracion de energia
   --mantener-baloo          No desactiva el indexador de archivos (Baloo)
   --solo-archivos           Solo copia archivos; no cambia la configuracion de Plasma
@@ -50,6 +52,7 @@ while [ $# -gt 0 ]; do
     --perfil) PERFIL="${2:-}"; shift ;;
     --sin-whitesur) WHITESUR=0 ;;
     --sin-dock) DOCK=0 ;;
+    --sin-barra) BARRA=0 ;;
     --sin-energia) ENERGIA=0 ;;
     --mantener-baloo) BALOO=0 ;;
     --solo-archivos) APLICAR=0 ;;
@@ -246,6 +249,30 @@ if [ "$DOCK" -eq 1 ] && command -v qdbus6 >/dev/null 2>&1; then
   js="$(sed "s#__LANZADORES__#[$lanzadores]#" "$AQUI/lib/dock.js")"
   qdbus6 org.kde.plasmashell /PlasmaShell org.kde.PlasmaShell.evaluateScript "$js" >/dev/null 2>&1 ||
     aviso "No pude crear el dock (Plasma no responde)."
+fi
+
+# --- 5b. barra superior -----------------------------------------------------
+if [ "$BARRA" -eq 1 ] && command -v qdbus6 >/dev/null 2>&1 && pgrep -x plasmashell >/dev/null; then
+  msg "Barra superior: menu global y reloj centrado"
+  res="$(qdbus6 org.kde.plasmashell /PlasmaShell org.kde.PlasmaShell.evaluateScript \
+        "$(cat "$AQUI/lib/barra.js")" 2>/dev/null || true)"
+  panel="$(printf '%s' "$res" | sed -n 's/.*PANEL=\([0-9]*\) .*/\1/p')"
+  orden="$(printf '%s' "$res" | sed -n 's/.*ORDER=\([0-9;]*\).*/\1/p')"
+  if [ -n "$panel" ] && [ -n "$orden" ]; then
+    actual="$(kreadconfig6 --file plasma-org.kde.plasma.desktop-appletsrc \
+              --group Containments --group "$panel" --group General --key AppletOrder)"
+    if [ "$actual" != "$orden" ]; then
+      # El orden solo se puede fijar con Plasma parado; se reinicia unos segundos
+      kquitapp6 plasmashell >/dev/null 2>&1 || true
+      sleep 3
+      kwriteconfig6 --file plasma-org.kde.plasma.desktop-appletsrc \
+        --group Containments --group "$panel" --group General --key AppletOrder "$orden"
+      (setsid kstart plasmashell >/dev/null 2>&1 &)
+      sleep 5
+    fi
+  else
+    aviso "No encontre la barra superior; la dejo como esta."
+  fi
 fi
 
 # --- 6. sistema -------------------------------------------------------------
