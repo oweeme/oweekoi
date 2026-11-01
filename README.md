@@ -14,6 +14,7 @@ y se puede deshacer.
 | **Protector de pantalla** | Fondo animado «Owee Koi» para la pantalla de bloqueo: tres kois nadando, con casi nada de consumo (los peces son imágenes que mueve la tarjeta gráfica) |
 | **Pantalla de inicio** | Splash animado: tu logo en el centro y dos kois nadando a su alrededor |
 | **Estilo** | [WhiteSur](https://github.com/vinceliuice/WhiteSur-kde) oscuro (tema global, iconos y cursor), dock flotante inferior que se oculta solo, fuente Inter |
+| **Barra superior** | Estilo macOS: menú de aplicaciones y escritorios, **menú global** de la app activa, reloj centrado y bandeja a la derecha. Sin iconos repetidos: las apps abiertas se ven en el dock |
 | **Iconos** | Tema `OweeLogo`: pone el logo de Owee donde Plasma muestra el logo de la distribución |
 | **Energía** | Perfil `laptop` o `pc`; el protector sale a los 5 min y la pantalla se apaga después |
 | **Rendimiento** | Desactiva el indexador de archivos Baloo (opcional) |
@@ -48,6 +49,7 @@ Al terminar, **cierra sesión y vuelve a entrar**.
 --perfil laptop|pc|auto   Ajustes de energía (por defecto auto: laptop si hay batería)
 --sin-whitesur            No descarga WhiteSur (queda Breeze oscuro + iconos propios)
 --sin-dock                No crea el dock flotante inferior
+--sin-barra               No cambia la barra superior (menú global y reloj centrado)
 --sin-energia             No toca la configuración de energía
 --mantener-baloo          No desactiva el indexador de archivos
 --solo-archivos           Solo copia archivos; no cambia la configuración de Plasma
@@ -71,6 +73,13 @@ Ejecuta `lib/sistema.sh` con `sudo`. Cada paso se omite solo si tu sistema no lo
 6. Pantalla de arranque con tu logo: crea un tema Plymouth propio, `oweekoi`, copia de breeze,
    sin tocar el original. Para volver: `sudo update-alternatives --set default.plymouth /usr/share/plymouth/themes/breeze/breeze.plymouth && sudo update-initramfs -u`.
 
+### Menú global
+
+La barra superior incluye el widget *Menú de aplicación*. Las apps de KDE y Qt ocultan su menú
+en la ventana y lo muestran arriba (ábrelas de nuevo tras instalar). En Kate, si aún lo ves en la
+ventana: *Ajustes → Mostrar barra de menús* (`Ctrl+M`). Firefox, Chrome y otras apps que no son Qt
+no exportan su menú.
+
 ## Perfiles de energía
 
 | | Portátil con batería | Enchufado / PC |
@@ -90,7 +99,8 @@ Con batería baja, el portátil atenúa a 1 min, apaga la pantalla a los 2 y sus
 ```
 
 Restaura el último respaldo de configuración y borra los archivos de OweeKoi. No desinstala
-WhiteSur ni lo que haya instalado el modo `--sistema`. El dock se quita con clic derecho sobre él →
+WhiteSur ni lo que haya instalado el modo `--sistema`. La barra superior vuelve a como estaba al restaurar el
+respaldo (cierra sesión para verlo). El dock se quita con clic derecho sobre él →
 *Editar panel* → *Eliminar panel*.
 
 ## Cómo está hecho
@@ -122,6 +132,6 @@ and desktop PCs.
 git clone https://github.com/oweeme/oweekoi.git && cd oweekoi && ./install.sh
 ```
 
-Use `--perfil laptop|pc`, `--sin-whitesur`, `--sin-dock`, `--sin-energia`, `--mantener-baloo`,
+Use `--perfil laptop|pc`, `--sin-whitesur`, `--sin-dock`, `--sin-barra`, `--sin-energia`, `--mantener-baloo`,
 `--solo-archivos` or `--sistema` (sudo: skip the GRUB menu after a hard power-off, TRIM, boot logo).
 Your previous settings are backed up first and `./uninstall.sh` restores them. Licensed GPL-3.0.
