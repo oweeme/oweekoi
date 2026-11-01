@@ -6,18 +6,19 @@ no a 21:1, que cansa menos la vista. Todo el texto normal cumple WCAG AA (>= 4.5
 """
 import math
 
-# Oscuro: pastel oscuro azul pizarra (el de la web de Owee), sin verde en los fondos.
-# El verde lima vive solo en el acento y en lo seleccionado, igual que en el modo claro.
+# Estilo "tinta y papel": oscuro = tinta sumi (negro pastel calido, sin tinte azul ni verde)
+# con texto crema del logo; claro = papel crema con texto de tinta. Los dos se leen como
+# inversion uno del otro. El verde lima y el coral del koi son los unicos acentos.
 # acento_kde es el AccentColor de Plasma (el que eligio el autor): se escribe en el esquema.
 OSCURO = dict(
-    base="#252a34", vista="#1e232c", superficie="#2c323d", elevado="#343b48", borde="#465061",
-    texto="#e7eaf0", suave="#aab2c2", acento="#6fd45c", acento_kde="#3dd425",
+    base="#232122", vista="#1b1a1b", superficie="#2a2829", elevado="#323031", borde="#4a4647",
+    texto="#ece6d6", suave="#b0a99a", acento="#6fd45c", acento_kde="#3dd425",
     seleccion="#75de61", sobre_seleccion="#0f1d0b",
     coral="#f58a76", positivo="#7bd88f", neutro="#e8b65c", enlace="#7cb9f0", visitado="#b5a8f0",
 )
 CLARO = dict(
     base="#f2eee2", vista="#faf7ee", superficie="#ebe6d6", elevado="#fffdf7", borde="#d6cfbb",
-    texto="#232d2a", suave="#58665f", acento="#2c991a", acento_kde="#3dd425",
+    texto="#252223", suave="#5f5a55", acento="#2c991a", acento_kde="#3dd425",
     seleccion="#75de61", sobre_seleccion="#0f1d0b",
     coral="#c9412c", positivo="#2b7a4b", neutro="#8f5f00", enlace="#1d62a0", visitado="#6a54b8",
 )
