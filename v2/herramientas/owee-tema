@@ -37,3 +37,15 @@ case "${1:-auto}" in
 esac
 
 [ "$actual" = "$deseado" ] || plasma-apply-colorscheme "$deseado" >/dev/null
+
+# El decorado de ventanas (barra de titulo) tambien tiene version clara y oscura. Solo se
+# toca si ya usas uno de OweeKoi: si elegiste otro, se respeta.
+decoracion="$(kreadconfig6 --file kwinrc --group org.kde.kdecoration2 --key theme)"
+case "$decoracion" in
+  __aurorae__svg__OweeKoi-*)
+    [ "$deseado" = "$CLARO" ] && nueva="__aurorae__svg__OweeKoi-Light" || nueva="__aurorae__svg__OweeKoi-Dark"
+    if [ "$decoracion" != "$nueva" ]; then
+      kwriteconfig6 --file kwinrc --group org.kde.kdecoration2 --key theme "$nueva"
+      qdbus6 org.kde.KWin /KWin reconfigure >/dev/null 2>&1 || true
+    fi ;;
+esac
