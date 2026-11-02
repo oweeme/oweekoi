@@ -123,7 +123,15 @@ def conjunto(prefijo, ox, oy, S, E, ins, radios, opacidad, estilo, id_grad, band
             d, W, H = pieza_forma(p, S, E, ins, radios)
             if estilo == "cuerpo":
                 # sombra pegada al cuerpo (en el anillo transparente del marco), redondeada como el
-                cuerpo = (sombra_pieza(p, W, H, f"r{id_grad}{prefijo}", 0.28) if anillo else "")
+                cuerpo = ""
+                if anillo:
+                    # base: sombra casi imperceptible; encima, tres anillos de onda cada vez mas tenues
+                    cuerpo = sombra_pieza(p, W, H, f"r{id_grad}{prefijo}", 0.09)
+                    for b, op in ((-3, 0.10), (-6, 0.06), (-9, 0.03)):
+                        halo = pieza_banda(p, S, E, ins, radios, b)
+                        if halo:
+                            cuerpo += (f'<path d="{halo}" class="ColorScheme-Text" fill="currentColor" '
+                                       f'fill-opacity="{op}"/>')
                 cuerpo += (f'<path d="{d}" class="ColorScheme-Background" fill="currentColor" '
                            f'fill-opacity="{opacidad}"/>')
                 # doble linea de onda: borde fino y otro mas tenue 3 px dentro
@@ -181,7 +189,7 @@ def sombra_pieza(p, W, H, id_grad, a0=0.30, ancho=12, radio=12):
             f'<rect x="{rx}" y="{ry}" width="{rw}" height="{rh}" fill="url(#{gid})"/>')
 
 
-def sombra_completa(p, W, H, id_grad, a0=0.15):
+def sombra_completa(p, W, H, id_grad, a0=0.07):
     """Sombra exterior: degradado de 0 (lejos) a a0 en todo el ancho de la pieza (para el panel)."""
     gid = f"g{id_grad}{p}"
     if p == "mc":
