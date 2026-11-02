@@ -6,6 +6,30 @@ y se puede deshacer.
 
 ![Estanque](docs/img/estanque.jpg)
 
+## OweeKoi 2 — tinta y papel (rama `v2`)
+
+La versión 2 es **100 % propia**: no usa ni descarga WhiteSur. Un solo rasgo la define: **la onda del
+estanque**.
+
+- **Tinta y papel**: modo oscuro (negro pastel cálido con texto crema) y modo claro (papel crema), con
+  contraste AA, sin blanco ni negro puros.
+- **Doble línea de onda** en ventanas y menús, y un halo de tres anillos finísimos en lugar de una sombra pesada.
+- **Ventanas «Onda»**: botones en forma de escama de koi, en pastel (coral, ámbar, verde), con anillo de onda al pasar el ratón.
+- **Carpetas de colores** mate y sin brillo, y un menú en Dolphin (*Actions ▸ Color de carpeta*) para marcar las tuyas.
+- **Fondos del estanque** con par claro/oscuro y **protector animado** de kois que sigue el modo.
+- **`owee-tema`**: `claro | oscuro | alternar | auto` (claro de día, oscuro de noche).
+
+```bash
+git clone -b v2 https://github.com/oweeme/oweekoi.git && cd oweekoi
+./v2/instalar.sh                 # --modo claro|oscuro|auto · --horario · --sin-barra · --solo-archivos
+./v2/desinstalar.sh              # restaura tu configuración anterior
+```
+
+Todo se genera con scripts en `v2/herramientas/` (`paleta.py` es la fuente única de colores).
+Antes de cambiar nada se respalda tu configuración. Licencia: GPL-3.0.
+
+---
+
 ## Qué incluye
 
 | | |

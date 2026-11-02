@@ -1,0 +1,11 @@
+{
+    "KPackageStructure": "Plasma/LookAndFeel",
+    "KPlugin": {
+        "Authors": [{ "Name": "Owee" }],
+        "Description": "Pantalla de inicio con kois nadando alrededor del logo",
+        "Id": "org.owee.koi",
+        "License": "GPL-3.0+",
+        "Name": "Owee Koi",
+        "Version": "1.0"
+    }
+}

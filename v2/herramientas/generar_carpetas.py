@@ -5,8 +5,8 @@ Estilo mate y suave, pensado para no cansar la vista: sin brillos ni reflejos, c
 pastel con poca saturacion y un simbolo grabado (mas oscuro que la carpeta) para reconocer
 cada una. Un solo juego sirve para modo claro y oscuro.
 
-Salida: v2/iconos/OweeKoi/ (index.theme + places/scalable/*.svg). El tema hereda de OweeLogo,
-WhiteSur-dark, breeze y hicolor: solo reemplaza las carpetas, el resto de iconos sigue igual.
+Salida: v2/iconos/OweeKoi/ (index.theme + places/scalable/*.svg). El tema hereda de breeze y
+hicolor (de KDE): solo reemplaza las carpetas y pone el logo de Owee; el resto de iconos es de Breeze.
 """
 import shutil
 import sys
@@ -91,19 +91,21 @@ SIMBOLOS = {"code": "codigo", "development": "codigo", "android": "android", "qt
             "git": "rama", "github": "rama"}
 EXTRA = {"android": "verde", "qt": "verde", "code": "verde", "git": "verde", "github": "verde"}
 
-INDEX = """[Icon Theme]
-Name=OweeKoi
-Comment=Carpetas de colores suaves y mate de OweeKoi
-Inherits=OweeLogo,WhiteSur-dark,breeze,hicolor
-Directories=places/scalable
+TAMANOS_LOGO = (16, 22, 24, 32, 48, 64, 128, 256, 512)
+NOMBRES_LOGO = ("start-here-kde-neon", "start-here-kde", "start-here-kde-plasma", "start-here",
+                "distributor-logo-neon", "distributor-logo", "neon", "oweelogo")
+LOGOS = RAIZ.parents[2] / "tema" / "iconos"   # logo de Owee en cada tamano (ya esta en el repo)
 
-[places/scalable]
-Size=64
-MinSize=16
-MaxSize=512
-Type=Scalable
-Context=Places
-"""
+
+def index_theme():
+    """Directorios: carpetas vectoriales + el logo de Owee en tamanos fijos."""
+    dirs = ["places/scalable"] + [f"places/{t}" for t in TAMANOS_LOGO]
+    txt = ("[Icon Theme]\nName=OweeKoi\nComment=Carpetas de colores suaves y mate, y el logo de Owee\n"
+           "Inherits=breeze,hicolor\nDirectories=" + ",".join(dirs) + "\n\n"
+           "[places/scalable]\nSize=64\nMinSize=16\nMaxSize=512\nType=Scalable\nContext=Places\n")
+    for t in TAMANOS_LOGO:
+        txt += f"\n[places/{t}]\nSize={t}\nContext=Places\nType=Fixed\n"
+    return txt
 
 
 def mezcla(c1, c2, t):
@@ -124,7 +126,7 @@ if __name__ == "__main__":
     if SALIDA.exists():
         shutil.rmtree(RAIZ)
     SALIDA.mkdir(parents=True)
-    (RAIZ / "index.theme").write_text(INDEX, encoding="utf-8")
+    (RAIZ / "index.theme").write_text(index_theme(), encoding="utf-8")
     # carpetas de colores lisas, para ponerselas a mano a una carpeta concreta
     for nombre in [*CARPETAS, "gris"]:
         (SALIDA / f"folder-owee-{nombre}.svg").write_text(svg(color_carpeta(nombre)), encoding="utf-8")
@@ -143,4 +145,11 @@ if __name__ == "__main__":
         icono = f"folder-{n}"
         (SALIDA / f"{icono}.svg").write_text(
             svg(color_carpeta(color), SIMBOLOS.get(n, "")), encoding="utf-8")
-    print(f"{len(list(SALIDA.glob('*.svg')))} iconos en {RAIZ}")
+    # el logo de Owee donde Plasma muestra el logo de la distribucion
+    for t in TAMANOS_LOGO:
+        origen = LOGOS / str(t) / "oweelogo.png"
+        carpeta = RAIZ / "places" / str(t)
+        carpeta.mkdir(parents=True, exist_ok=True)
+        for nombre in NOMBRES_LOGO:
+            shutil.copy(origen, carpeta / f"{nombre}.png")
+    print(f"{len(list(SALIDA.glob('*.svg')))} iconos de carpeta + logo en {len(TAMANOS_LOGO)} tamanos, en {RAIZ}")

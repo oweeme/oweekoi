@@ -1,0 +1,15 @@
+{
+    "KPackageStructure": "Plasma/LookAndFeel",
+    "KPlugin": {
+        "Authors": [
+            {
+                "Name": "Owee"
+            }
+        ],
+        "Description": "OweeKoi 2 en modo papel: colores, iconos, estilo de Plasma, ventanas con ondas, protector y pantalla de inicio",
+        "Id": "org.owee.koi.claro",
+        "License": "GPL-3.0+",
+        "Name": "OweeKoi Claro",
+        "Version": "2.0"
+    }
+}
