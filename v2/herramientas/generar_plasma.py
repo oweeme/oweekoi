@@ -54,31 +54,57 @@ def pieza_forma(nombre, S, E, ins, radios):
     return f"M{W - ir} 0L{W - ir} {H - ib - r}A{r} {r} 0 0 1 {W - ir - r} {H - ib}L0 {H - ib}L0 0Z", W, H
 
 
-def pieza_linea(nombre, S, E, ins, radios, off):
-    """Linea fina a 'off' px dentro del borde del cuerpo (solo en los lados del marco)."""
-    it, ib, il, ir = (v + off for v in ins)
-    rtl, rtr, rbl, rbr = (max(r - off, 0) for r in radios)
+def pieza_banda(nombre, S, E, ins, radios, b):
+    """Banda rellena de 1 px a 'b' px dentro del borde del cuerpo, como forma cerrada.
+
+    Se usan formas rellenas y no trazos: Qt suma medio pixel de trazo a cada lado al medir una
+    pieza, y eso las agranda (24 -> 25) y descuadra el marco entero."""
+    it, ib, il, ir = ins
+    rtl, rtr, rbl, rbr = radios
+    t = 1
     w = {"l": S, "c": E, "r": S}
     h = {"t": S, "m": E, "b": S}
+    if nombre == "mc":
+        return ""  # el centro no lleva lineas
     f, c = nombre
     W, H = w[c], h[f]
+    xl, xr, yt, yb = il + b, W - ir - b, it + b, H - ib - b
+
+    def arcos(r):
+        ro = r - b
+        return ro, ro - t
+
     if nombre == "tl":
-        return f"M{il} {H}L{il} {it + rtl}A{rtl} {rtl} 0 0 1 {il + rtl} {it}L{W} {it}"
+        if rtl > b + t:
+            ro, ri = arcos(rtl)
+            return (f"M{xl} {H}L{xl} {it + rtl}A{ro} {ro} 0 0 1 {il + rtl} {yt}L{W} {yt}L{W} {yt + t}"
+                    f"L{il + rtl} {yt + t}A{ri} {ri} 0 0 0 {xl + t} {it + rtl}L{xl + t} {H}Z")
+        return f"M{xl} {H}L{xl} {yt}L{W} {yt}L{W} {yt + t}L{xl + t} {yt + t}L{xl + t} {H}Z"
     if nombre == "tc":
-        return f"M0 {it}L{W} {it}"
+        return f"M0 {yt}L{W} {yt}L{W} {yt + t}L0 {yt + t}Z"
     if nombre == "tr":
-        return f"M0 {it}L{W - ir - rtr} {it}A{rtr} {rtr} 0 0 1 {W - ir} {it + rtr}L{W - ir} {H}"
+        if rtr > b + t:
+            ro, ri = arcos(rtr)
+            return (f"M0 {yt}L{W - ir - rtr} {yt}A{ro} {ro} 0 0 1 {xr} {it + rtr}L{xr} {H}L{xr - t} {H}"
+                    f"L{xr - t} {it + rtr}A{ri} {ri} 0 0 0 {W - ir - rtr} {yt + t}L0 {yt + t}Z")
+        return f"M0 {yt}L{xr} {yt}L{xr} {H}L{xr - t} {H}L{xr - t} {yt + t}L0 {yt + t}Z"
     if nombre == "ml":
-        return f"M{il} 0L{il} {H}"
+        return f"M{xl} 0L{xl + t} 0L{xl + t} {H}L{xl} {H}Z"
     if nombre == "mr":
-        return f"M{W - ir} 0L{W - ir} {H}"
+        return f"M{xr - t} 0L{xr} 0L{xr} {H}L{xr - t} {H}Z"
     if nombre == "bl":
-        return f"M{il} 0L{il} {H - ib - rbl}A{rbl} {rbl} 0 0 0 {il + rbl} {H - ib}L{W} {H - ib}"
+        if rbl > b + t:
+            ro, ri = arcos(rbl)
+            return (f"M{xl} 0L{xl} {H - ib - rbl}A{ro} {ro} 0 0 0 {il + rbl} {yb}L{W} {yb}L{W} {yb - t}"
+                    f"L{il + rbl} {yb - t}A{ri} {ri} 0 0 1 {xl + t} {H - ib - rbl}L{xl + t} 0Z")
+        return f"M{xl} 0L{xl} {yb}L{W} {yb}L{W} {yb - t}L{xl + t} {yb - t}L{xl + t} 0Z"
     if nombre == "bc":
-        return f"M0 {H - ib}L{W} {H - ib}"
-    if nombre == "br":
-        return f"M{W - ir} 0L{W - ir} {H - ib - rbr}A{rbr} {rbr} 0 0 1 {W - ir - rbr} {H - ib}L0 {H - ib}"
-    return ""
+        return f"M0 {yb - t}L{W} {yb - t}L{W} {yb}L0 {yb}Z"
+    if rbr > b + t:  # br
+        ro, ri = arcos(rbr)
+        return (f"M{xr} 0L{xr} {H - ib - rbr}A{ro} {ro} 0 0 1 {W - ir - rbr} {yb}L0 {yb}L0 {yb - t}"
+                f"L{W - ir - rbr} {yb - t}A{ri} {ri} 0 0 0 {xr - t} {H - ib - rbr}L{xr - t} 0Z")
+    return f"M{xr} 0L{xr} {yb}L0 {yb}L0 {yb - t}L{xr - t} {yb - t}L{xr - t} 0Z"
 
 
 ORDEN = [["tl", "tc", "tr"], ["ml", "mc", "mr"], ["bl", "bc", "br"]]
@@ -98,11 +124,11 @@ def conjunto(prefijo, ox, oy, S, E, ins, radios, opacidad, estilo, id_grad):
                 cuerpo = (f'<path d="{d}" class="ColorScheme-Background" fill="currentColor" '
                           f'fill-opacity="{opacidad}"/>')
                 # doble linea de onda: borde fino y otro mas tenue 3 px dentro
-                for off, op in ((0.5, 0.20), (3.5, 0.08)):
-                    ln = pieza_linea(p, S, E, ins, radios, off)
-                    if ln:
-                        cuerpo += (f'<path d="{ln}" fill="none" class="ColorScheme-Text" stroke="currentColor" '
-                                   f'stroke-opacity="{op}" stroke-width="1"/>')
+                for b, op in ((0, 0.20), (3, 0.08)):
+                    banda = pieza_banda(p, S, E, ins, radios, b)
+                    if banda:
+                        cuerpo += (f'<path d="{banda}" class="ColorScheme-Text" '
+                                   f'fill="currentColor" fill-opacity="{op}"/>')
             elif estilo == "mascara":
                 cuerpo = f'<path d="{d}" fill="#000"/>'
             else:
