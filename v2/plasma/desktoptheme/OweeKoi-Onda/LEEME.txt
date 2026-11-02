@@ -1,0 +1,1 @@
+OweeKoi Onda: estilo de Plasma propio de Owee (GPL-3.0). Lo que no define lo toma el tema por defecto.

@@ -1,0 +1,13 @@
+{
+    "KPackageStructure": "Plasma/Theme",
+    "KPlugin": {
+        "Authors": [{ "Name": "Owee" }],
+        "Category": "",
+        "Description": "OweeKoi Onda: paneles y ventanas emergentes con doble linea de onda. Sigue el esquema claro u oscuro.",
+        "EnabledByDefault": true,
+        "Id": "OweeKoi-Onda",
+        "License": "GPL-3.0+",
+        "Name": "OweeKoi Onda",
+        "Version": "1.0"
+    }
+}
