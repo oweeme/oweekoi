@@ -9,6 +9,35 @@ from paleta import CLARO, OSCURO, a_rgb, contraste  # noqa: E402
 SALIDA = Path(__file__).resolve().parent.parent / "colores"
 
 
+# Efectos de KDE para controles desactivados y ventanas inactivas. Sin estas secciones Plasma las deja
+# vacias en kdeglobals. Son los valores de referencia de Breeze, con una excepcion en el modo claro:
+# el efecto "oscurecer" de KDE baja la luminosidad CONSERVANDO el tinte, y en un crema casi blanco eso
+# lo vuelve amarillo saturado ((255,253,247) -> (255,241,193)). En claro se desactiva ese oscurecimiento
+# (IntensityEffect=0); el texto desactivado se sigue desvaneciendo con ContrastEffect.
+def efectos(claro):
+    return f"""[ColorEffects:Disabled]
+Color=56,56,56
+ColorAmount=0
+ColorEffect=0
+ContrastAmount=0.65
+ContrastEffect=1
+IntensityAmount={0 if claro else 0.1}
+IntensityEffect={0 if claro else 2}
+
+[ColorEffects:Inactive]
+ChangeSelectionColor=true
+Color=112,111,110
+ColorAmount=0.025
+ColorEffect=2
+ContrastAmount=0.1
+ContrastEffect=2
+Enable=false
+IntensityAmount=0
+IntensityEffect=0
+
+"""
+
+
 def rgb(h):
     return "%d,%d,%d" % a_rgb(h)
 
@@ -55,7 +84,7 @@ ForegroundVisited={rgb(P['sobre_seleccion'])}
         grupo("View", P["vista"], P["superficie"], P),
         grupo("Window", P["base"], P["superficie"], P),
     ]
-    resto = f"""[General]
+    resto = efectos(nombre.endswith("Light")) + f"""[General]
 ColorScheme={nombre}
 Name={nombre.replace('OweeKoi', 'OweeKoi ')}
 shadeSortColumn=true
