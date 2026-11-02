@@ -153,6 +153,8 @@ def pistas(prefijo, ox, oy, S, E, margen, inset, prefijo_hint=""):
         r("hint-left-margin", ox, cy + 4, margen, 4), r("hint-right-margin", ox + 2 * S + E - margen, cy + 4, margen, 4),
         r("hint-top-inset", cx - 4, oy, 4, inset), r("hint-bottom-inset", cx - 4, oy + 2 * S + E - inset, 4, inset),
         r("hint-left-inset", ox, cy - 4, inset, 4), r("hint-right-inset", ox + 2 * S + E - inset, cy - 4, inset, 4),
+        # sin esto Plasma REPITE las piezas de borde y en cada junta se ve un trazo cortado
+        r("hint-stretch-borders", cx + 12, cy + 12, 4, 4),
     ])
 
 
