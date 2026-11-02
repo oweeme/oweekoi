@@ -1,0 +1,16 @@
+{
+    "KPackageStructure": "aurorae",
+    "KPlugin": {
+        "Authors": [{ "Name": "Owee" }],
+        "Category": "Plasma 6 Window Decorations",
+        "ServiceTypes": ["aurorae"],
+        "EnabledByDefault": true,
+        "Name": "OweeKoi-Onda-Dark",
+        "Description": "Decorado de ventanas OweeKoi Onda (oscuro): doble linea de onda y botones en forma de escama",
+        "Id": "OweeKoi-Onda-Dark",
+        "License": "GPL-3.0+",
+        "Version": "1.0",
+        "X-KDE-PluginInfo-blur": false,
+        "X-KPackage-Dependencies": []
+    }
+}

@@ -43,7 +43,8 @@ esac
 decoracion="$(kreadconfig6 --file kwinrc --group org.kde.kdecoration2 --key theme)"
 case "$decoracion" in
   __aurorae__svg__OweeKoi-*)
-    [ "$deseado" = "$CLARO" ] && nueva="__aurorae__svg__OweeKoi-Light" || nueva="__aurorae__svg__OweeKoi-Dark"
+    base="__aurorae__svg__OweeKoi"; case "$decoracion" in __aurorae__svg__OweeKoi-Onda-*) base="__aurorae__svg__OweeKoi-Onda" ;; esac
+    [ "$deseado" = "$CLARO" ] && nueva="$base-Light" || nueva="$base-Dark"
     if [ "$decoracion" != "$nueva" ]; then
       kwriteconfig6 --file kwinrc --group org.kde.kdecoration2 --key theme "$nueva"
       qdbus6 org.kde.KWin /KWin reconfigure >/dev/null 2>&1 || true
