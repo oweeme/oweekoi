@@ -112,7 +112,8 @@ NOMBRE = {"tl": "topleft", "tc": "top", "tr": "topright", "ml": "left", "mc": "c
           "mr": "right", "bl": "bottomleft", "bc": "bottom", "br": "bottomright"}
 
 
-def conjunto(prefijo, ox, oy, S, E, ins, radios, opacidad, estilo, id_grad):
+def conjunto(prefijo, ox, oy, S, E, ins, radios, opacidad, estilo, id_grad, bandas=((0, 0.20), (3, 0.08)),
+             anillo=False, sombra_modo="externa"):
     """Un juego de 9 piezas. estilo: 'cuerpo' | 'mascara' | 'sombra'."""
     out = []
     y = oy
@@ -121,10 +122,12 @@ def conjunto(prefijo, ox, oy, S, E, ins, radios, opacidad, estilo, id_grad):
         for p in fila:
             d, W, H = pieza_forma(p, S, E, ins, radios)
             if estilo == "cuerpo":
-                cuerpo = (f'<path d="{d}" class="ColorScheme-Background" fill="currentColor" '
-                          f'fill-opacity="{opacidad}"/>')
+                # sombra pegada al cuerpo (en el anillo transparente del marco), redondeada como el
+                cuerpo = (sombra_pieza(p, W, H, f"r{id_grad}{prefijo}", 0.28) if anillo else "")
+                cuerpo += (f'<path d="{d}" class="ColorScheme-Background" fill="currentColor" '
+                           f'fill-opacity="{opacidad}"/>')
                 # doble linea de onda: borde fino y otro mas tenue 3 px dentro
-                for b, op in ((0, 0.20), (3, 0.08)):
+                for b, op in bandas:
                     banda = pieza_banda(p, S, E, ins, radios, b)
                     if banda:
                         cuerpo += (f'<path d="{banda}" class="ColorScheme-Text" '
@@ -132,41 +135,69 @@ def conjunto(prefijo, ox, oy, S, E, ins, radios, opacidad, estilo, id_grad):
             elif estilo == "mascara":
                 cuerpo = f'<path d="{d}" fill="#000"/>'
             else:
-                cuerpo = sombra_pieza(p, W, H, f"{id_grad}{prefijo}")
+                cuerpo = "" if sombra_modo == "transparente" else sombra_completa(p, W, H, f"{id_grad}{prefijo}")
             # el rectangulo casi transparente fija el tamano exacto de la pieza
             out.append(f'<g id="{prefijo}{NOMBRE[p]}" transform="translate({x} {y})">'
-                       f'<rect width="{W}" height="{H}" fill="#000" fill-opacity="0.01"/>{cuerpo}</g>')
+                       f'<rect width="{W}" height="{H}" fill="none"/>{cuerpo}</g>')
             x += W
         y += {"t": S, "m": E, "b": S}[fila[0][0]]
     return "".join(out), ox + 2 * S + E, oy + 2 * S + E
 
 
-def sombra_pieza(p, W, H, id_grad):
-    """Sombra: degradado de 0 (lejos del cuerpo) a su maximo (junto a el)."""
-    a0 = 0.34
+def sombra_pieza(p, W, H, id_grad, a0=0.30, ancho=12, radio=12):
+    """Sombra: anillo de 'ancho' px alrededor del cuerpo, con el hueco redondeado como el cuerpo.
+
+    La pieza mide 2*ancho de lado en las esquinas: los primeros 'ancho' px son sombra y el resto
+    es el hueco (donde esta el cuerpo). El desvanecido se mide desde el borde del hueco."""
     gid = f"g{id_grad}{p}"
     if p == "mc":
-        return ""  # debajo del cuerpo no hay sombra (el panel es translucido)
+        return ""
+    # perfil suave: de 0 (borde exterior) a a0 (junto al cuerpo)
+    perfil = ((0, 0), (0.25, 0.09), (0.5, 0.30), (0.75, 0.62), (1, 1))
     if p in ("tl", "tr", "bl", "br"):
-        cx = W if p in ("tl", "bl") else 0   # centro: la esquina interior de la pieza
+        cx = W if p in ("tl", "bl") else 0   # centro del arco del hueco
         cy = H if p in ("tl", "tr") else 0
-        paradas = "".join(f'<stop offset="{o}" stop-color="#000" stop-opacity="{a0 * v:.3f}"/>'
-                          for o, v in ((0, 1), (0.40, 0.40), (0.70, 0.10), (1, 0)))
+        r_ext = ancho + radio                 # radio donde la sombra llega a 0
+        f_hueco = radio / r_ext               # el hueco ocupa de 0 a este valor
+        paradas = [f'<stop offset="0" stop-color="#000" stop-opacity="0"/>',
+                   f'<stop offset="{f_hueco - 0.02:.3f}" stop-color="#000" stop-opacity="0"/>']
+        for o, v in reversed(perfil):          # del hueco (maximo) hacia fuera (0)
+            off = f_hueco + (1 - f_hueco) * (1 - o)
+            paradas.append(f'<stop offset="{off:.3f}" stop-color="#000" stop-opacity="{a0 * v:.3f}"/>')
         return (f'<defs><radialGradient id="{gid}" gradientUnits="userSpaceOnUse" cx="{cx}" cy="{cy}" '
-                f'r="{W}">{paradas}</radialGradient></defs><rect width="{W}" height="{H}" fill="url(#{gid})"/>')
-    paradas = "".join(f'<stop offset="{o}" stop-color="#000" stop-opacity="{a0 * v:.3f}"/>'
-                      for o, v in ((0, 0), (0.30, 0.10), (0.60, 0.40), (1, 1)))
-    if p == "tc":
-        x1, y1, x2, y2 = 0, 0, 0, H          # de arriba (fuera) hacia abajo (cuerpo)
+                f'r="{r_ext}">{"".join(paradas)}</radialGradient></defs>'
+                f'<rect width="{W}" height="{H}" fill="url(#{gid})"/>')
+    paradas = "".join(f'<stop offset="{o}" stop-color="#000" stop-opacity="{a0 * v:.3f}"/>' for o, v in perfil)
+    if p == "tc":      # franja de arriba: de fuera (0) hacia el cuerpo
+        x1, y1, x2, y2, rx, ry, rw, rh = 0, 0, 0, ancho, 0, 0, W, ancho
     elif p == "bc":
-        x1, y1, x2, y2 = 0, H, 0, 0
+        x1, y1, x2, y2, rx, ry, rw, rh = 0, H, 0, H - ancho, 0, H - ancho, W, ancho
     elif p == "ml":
-        x1, y1, x2, y2 = 0, 0, W, 0
+        x1, y1, x2, y2, rx, ry, rw, rh = 0, 0, ancho, 0, 0, 0, ancho, H
     else:  # mr
-        x1, y1, x2, y2 = W, 0, 0, 0
+        x1, y1, x2, y2, rx, ry, rw, rh = W, 0, W - ancho, 0, W - ancho, 0, ancho, H
     return (f'<defs><linearGradient id="{gid}" gradientUnits="userSpaceOnUse" x1="{x1}" y1="{y1}" '
             f'x2="{x2}" y2="{y2}">{paradas}</linearGradient></defs>'
-            f'<rect width="{W}" height="{H}" fill="url(#{gid})"/>')
+            f'<rect x="{rx}" y="{ry}" width="{rw}" height="{rh}" fill="url(#{gid})"/>')
+
+
+def sombra_completa(p, W, H, id_grad, a0=0.15):
+    """Sombra exterior: degradado de 0 (lejos) a a0 en todo el ancho de la pieza (para el panel)."""
+    gid = f"g{id_grad}{p}"
+    if p == "mc":
+        return ""
+    perfil = ((0, 0), (0.30, 0.10), (0.60, 0.40), (1, 1))
+    paradas = "".join(f'<stop offset="{o}" stop-color="#000" stop-opacity="{a0 * v:.3f}"/>' for o, v in perfil)
+    if p in ("tl", "tr", "bl", "br"):
+        cx = W if p in ("tl", "bl") else 0
+        cy = H if p in ("tl", "tr") else 0
+        par = "".join(f'<stop offset="{o}" stop-color="#000" stop-opacity="{a0 * v:.3f}"/>'
+                      for o, v in ((0, 1), (0.40, 0.40), (0.70, 0.10), (1, 0)))
+        return (f'<defs><radialGradient id="{gid}" gradientUnits="userSpaceOnUse" cx="{cx}" cy="{cy}" r="{W}">'
+                f'{par}</radialGradient></defs><rect width="{W}" height="{H}" fill="url(#{gid})"/>')
+    x1, y1, x2, y2 = {"tc": (0, 0, 0, H), "bc": (0, H, 0, 0), "ml": (0, 0, W, 0), "mr": (W, 0, 0, 0)}[p]
+    return (f'<defs><linearGradient id="{gid}" gradientUnits="userSpaceOnUse" x1="{x1}" y1="{y1}" '
+            f'x2="{x2}" y2="{y2}">{paradas}</linearGradient></defs><rect width="{W}" height="{H}" fill="url(#{gid})"/>')
 
 
 def pistas(prefijo, ox, oy, S, E, margen, inset, prefijo_hint=""):
@@ -184,7 +215,8 @@ def pistas(prefijo, ox, oy, S, E, margen, inset, prefijo_hint=""):
     ])
 
 
-def svg_marco(S, E, I, R, margen, inset, S_sombra, opacidad, prefijos_panel=False, solido=False):
+def svg_marco(S, E, I, R, margen, inset, S_sombra, opacidad, prefijos_panel=False, solido=False,
+              bandas=((0, 0.20), (3, 0.08)), sombra="externa"):
     """Un archivo completo. prefijos_panel: ademas de plano, versiones north/south/east/west."""
     op = 1 if solido else opacidad
     ins_all = (I, I, I, I)
@@ -197,13 +229,15 @@ def svg_marco(S, E, I, R, margen, inset, S_sombra, opacidad, prefijos_panel=Fals
         ]
     partes, x, y = [], 10, 10
     for pref, ins, radios in variantes:
-        cuerpo, nx, _ = conjunto(pref, x, y, S, E, ins, radios, op, "cuerpo", "c")
+        cuerpo, nx, _ = conjunto(pref, x, y, S, E, ins, radios, op, "cuerpo", "c", bandas,
+                                  anillo=(sombra == "anillo"))
         mascara, mx, _ = conjunto(pref + "mask-", nx + 20, y, S, E, ins, radios, 1, "mascara", "m")
         partes += [cuerpo, mascara, pistas(pref, x, y, S, E, margen, inset)]
         y += 2 * S + E + 20
     # malla de sombra (una sola, para el juego plano)
     sombra, _, _ = conjunto("shadow-", 10 + 2 * (2 * S + E + 20) + 40, 10, S_sombra, E, (0, 0, 0, 0),
-                            (0, 0, 0, 0), 1, "sombra", "s")
+                            (0, 0, 0, 0), 1, "sombra", "s",
+                            sombra_modo="transparente" if sombra == "anillo" else "externa")
     partes += [sombra, pistas("shadow-", 10 + 2 * (2 * S + E + 20) + 40, 10, S_sombra, E, S_sombra // 2, S_sombra // 2)]
     ancho = 10 + 2 * (2 * S + E + 20) + 40 + 2 * S_sombra + E + 20
     alto = 10 + len(variantes) * (2 * S + E + 20)
@@ -237,15 +271,15 @@ if __name__ == "__main__":
     if DESTINO.exists():
         shutil.rmtree(DESTINO)
     # panel: piezas de 12 px, cuerpo a ras (el panel flotante deja su propio hueco)
-    panel = svg_marco(12, 12, 0, 12, 8, 8, 24, 0.90, prefijos_panel=True)
+    panel = svg_marco(8, 8, 0, 8, 8, 8, 24, 0.90, prefijos_panel=True, bandas=((0, 0.16),))
     # ventana emergente y dialogos: piezas de 24 px con el cuerpo 12 px adentro
-    emergente = svg_marco(24, 20, 12, 12, 24, 12, 24, 0.97)
+    emergente = svg_marco(24, 20, 12, 12, 24, 12, 24, 0.97, sombra="anillo")
     escribir(DESTINO / "metadata.json", METADATA)
     escribir(DESTINO / "widgets" / "panel-background.svg", panel)
     escribir(DESTINO / "widgets" / "background.svg", emergente)
     escribir(DESTINO / "dialogs" / "background.svg", emergente)
-    escribir(DESTINO / "solid" / "widgets" / "background.svg", svg_marco(24, 20, 12, 12, 24, 12, 24, 1, solido=True))
-    escribir(DESTINO / "solid" / "dialogs" / "background.svg", svg_marco(24, 20, 12, 12, 24, 12, 24, 1, solido=True))
+    escribir(DESTINO / "solid" / "widgets" / "background.svg", svg_marco(24, 20, 12, 12, 24, 12, 24, 1, solido=True, sombra="anillo"))
+    escribir(DESTINO / "solid" / "dialogs" / "background.svg", svg_marco(24, 20, 12, 12, 24, 12, 24, 1, solido=True, sombra="anillo"))
     escribir(DESTINO / "LEEME.txt",
              "OweeKoi Onda: estilo de Plasma propio de Owee (GPL-3.0). Lo que no define lo toma el tema por defecto.\n")
     print(f"plasma/desktoptheme/OweeKoi-Onda  ({sum(1 for _ in DESTINO.rglob('*.svg'))} svg)")
