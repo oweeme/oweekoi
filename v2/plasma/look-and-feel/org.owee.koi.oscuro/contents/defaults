@@ -1,5 +1,5 @@
 [kcminputrc][Mouse]
-cursorTheme=breeze_cursors
+cursorTheme=OweeKoi-Punteros
 
 [kdeglobals][General]
 ColorScheme=OweeKoiDark
@@ -8,6 +8,7 @@ ColorScheme=OweeKoiDark
 Theme=OweeKoi
 
 [kdeglobals][KDE]
+AnimationDurationFactor=1.2
 widgetStyle=Breeze
 
 [kscreenlockerrc][Greeter]
@@ -15,6 +16,10 @@ WallpaperPlugin=org.owee.koi
 
 [ksplashrc][KSplash]
 Theme=org.owee.koi
+
+[kwinrc][Plugins]
+magiclampEnabled=true
+squashEnabled=false
 
 [kwinrc][org.kde.kdecoration2]
 library=org.kde.kwin.aurorae

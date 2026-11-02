@@ -6,7 +6,7 @@
                 "Name": "Owee"
             }
         ],
-        "Description": "OweeKoi 2 en modo papel: colores, iconos, estilo de Plasma, ventanas con ondas, protector y pantalla de inicio",
+        "Description": "OweeKoi 2 en modo papel: colores, iconos, estilo de Plasma, ventanas con ondas, punteros, fondo, protector, pantalla de inicio y animaciones",
         "Id": "org.owee.koi.claro",
         "License": "GPL-3.0+",
         "Name": "OweeKoi Claro",

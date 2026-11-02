@@ -102,6 +102,7 @@ mkdir -p "$SHARE/color-schemes" "$SHARE/icons" "$SHARE/wallpapers" "$SHARE/plasm
          "$SHARE/kio/servicemenus" "$BIN"
 cp "$AQUI"/colores/OweeKoi*.colors "$SHARE/color-schemes/"
 rm -rf "$SHARE/icons/OweeKoi";                  cp -r "$AQUI/iconos/OweeKoi" "$SHARE/icons/"
+rm -rf "$SHARE/icons/OweeKoi-Punteros";         cp -r "$AQUI/punteros/OweeKoi-Punteros" "$SHARE/icons/"
 command -v gtk-update-icon-cache >/dev/null 2>&1 &&
   gtk-update-icon-cache -f -t "$SHARE/icons/OweeKoi" >/dev/null 2>&1 || true
 rm -rf "$SHARE/wallpapers/OweeKoi-Estanque";    cp -r "$AQUI/fondos/OweeKoi-Estanque" "$SHARE/wallpapers/"
@@ -126,6 +127,11 @@ msg "Aplicando OweeKoi ($MODO)"
 plasma-apply-colorscheme "$([ "$MODO" = claro ] && echo OweeKoiLight || echo OweeKoiDark)" >/dev/null 2>&1 ||
   aviso "No pude aplicar el esquema de color."
 k kdeglobals --group Icons --key Theme OweeKoi
+command -v plasma-apply-cursortheme >/dev/null 2>&1 && plasma-apply-cursortheme OweeKoi-Punteros >/dev/null 2>&1 || true
+# para que el interruptor "Cambiar a modo oscuro por la noche" de Configuracion use los temas de OweeKoi
+k kdeglobals --group KDE --key DefaultLightLookAndFeel org.owee.koi.claro
+k kdeglobals --group KDE --key DefaultDarkLookAndFeel org.owee.koi.oscuro
+k kdeglobals --group KDE --key LookAndFeelPackage "org.owee.koi.$([ "$MODO" = claro ] && echo claro || echo oscuro)"
 for p in /usr/lib/x86_64-linux-gnu/libexec/plasma-changeicons /usr/libexec/plasma-changeicons; do
   [ -x "$p" ] && "$p" OweeKoi >/dev/null 2>&1 && break
 done
@@ -185,6 +191,7 @@ cat <<EOF
 Listo. Cierra sesion y vuelve a entrar para ver la pantalla de inicio y el protector.
   - Cambiar de modo:   owee-tema claro | oscuro | alternar | auto
   - Color de carpeta:  clic derecho en una carpeta de Dolphin > Actions > Color de carpeta
+  - Modo por la noche: Configuracion del sistema > Temas globales > "Cambiar a modo oscuro por la noche"
   - Animaciones:       owee-animaciones activar | restaurar
   - Login:             sudo ./v2/login/instalar-login.sh  (y luego Configuracion > Pantalla de inicio de sesion)
   - Para deshacer:     ./v2/desinstalar.sh

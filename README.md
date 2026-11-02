@@ -17,6 +17,8 @@ estanque**.
 - **Ventanas «Onda»**: botones en forma de escama de koi, en pastel (coral, ámbar, verde), con anillo de onda al pasar el ratón.
 - **Carpetas de colores** mate y sin brillo, y un menú en Dolphin (*Actions ▸ Color de carpeta*) para marcar las tuyas.
 - **Fondos del estanque** con par claro/oscuro y **protector animado** de kois que sigue el modo.
+- **Punteros propios** (`OweeKoi-Punteros`): flecha crema, puntero de clic con anillo de onda y el logo de Owee con ondas al cargar; el resto lo hereda de Breeze.
+- **Tema global completo**: elegir *OweeKoi Oscuro/Claro* en *Temas globales* aplica colores, íconos, estilo, ventanas, punteros, fondo, pantalla de inicio, protector y animaciones de una vez, sin tocar tus paneles. Si marcas «Desktop and window layout», reconstruye la barra superior de OweeKoi.
 - **`owee-tema`**: `claro | oscuro | alternar | auto` (claro de día, oscuro de noche).
 - **Animaciones** suaves de KWin (`owee-animaciones`): Magic Lamp al minimizar y todo un 20 % más lento y calmado.
 - **Login**: el Plasma Login Manager no usa temas, usa un *fondo*; `sudo ./v2/login/instalar-login.sh` copia el tema y lo eliges en *Configuración del sistema → Pantalla de inicio de sesión*.
