@@ -30,6 +30,9 @@ rm -rf "$SHARE"/color-schemes/OweeKoiDark.colors "$SHARE"/color-schemes/OweeKoiL
        "$SHARE"/plasma/look-and-feel/org.owee.koi.claro \
        "$SHARE/aurorae/themes/OweeKoi-Onda-Dark" "$SHARE/aurorae/themes/OweeKoi-Onda-Light" \
        "$SHARE/kio/servicemenus/oweekoi-color-carpeta.desktop" \
+       "$SHARE"/konsole/OweeKoi-Oscuro.colorscheme "$SHARE"/konsole/OweeKoi-Claro.colorscheme "$SHARE/konsole/OweeKoi.profile" \
+       "$SHARE"/org.kde.syntax-highlighting/themes/OweeKoi-Oscuro.theme "$SHARE"/org.kde.syntax-highlighting/themes/OweeKoi-Claro.theme \
+       "$CONFIG"/QtProject/qtcreator/styles/OweeKoi-Oscuro.xml "$CONFIG"/QtProject/qtcreator/styles/OweeKoi-Claro.xml \
        "$BIN/owee-tema" "$BIN/owee-carpeta" "$BIN/owee-animaciones" "$BIN/owee-estilo"
 
 cat <<EOF

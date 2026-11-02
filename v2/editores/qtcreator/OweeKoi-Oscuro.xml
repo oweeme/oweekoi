@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<style-scheme version="1.0" name="OweeKoi Oscuro">
+  <style name="Text" foreground="#ece6d6" background="#262325"/>
+  <style name="Link" foreground="#7cb9f0"/>
+  <style name="Selection" background="#455246"/>
+  <style name="LineNumber" foreground="#938e87" background="#2a2628"/>
+  <style name="SearchResult" background="#745e3b"/>
+  <style name="SearchScope" background="#37414e"/>
+  <style name="Parentheses" foreground="#ece6d6" background="#5e7962"/>
+  <style name="ParenthesesMismatch" background="#835149"/>
+  <style name="AutoComplete" foreground="#ece6d6" background="#404a40"/>
+  <style name="CurrentLine" background="#322f30"/>
+  <style name="CurrentLineNumber" foreground="#8cc093" bold="true"/>
+  <style name="Occurrences" background="#353e4a"/>
+  <style name="Number" foreground="#b5a8f0"/>
+  <style name="String" foreground="#e8b65c"/>
+  <style name="Type" foreground="#7cb9f0"/>
+  <style name="Local" foreground="#ece6d6"/>
+  <style name="Parameter" foreground="#ece6d6" italic="true"/>
+  <style name="Global" foreground="#79b5ad"/>
+  <style name="Field" foreground="#8cc093"/>
+  <style name="Static" foreground="#79b5ad" italic="true"/>
+  <style name="VirtualMethod" foreground="#8cc093" italic="true"/>
+  <style name="Function" foreground="#8cc093"/>
+  <style name="Macro" foreground="#d9a05f"/>
+  <style name="Keyword" foreground="#f08a76" bold="true"/>
+  <style name="Attribute" foreground="#8cc093"/>
+  <style name="PrimitiveType" foreground="#7cb9f0"/>
+  <style name="Punctuation" foreground="#bab5aa"/>
+  <style name="Operator" foreground="#c4bfb3"/>
+  <style name="Preprocessor" foreground="#d9a05f"/>
+  <style name="Label" foreground="#79b5ad"/>
+  <style name="Comment" foreground="#948d80" italic="true"/>
+  <style name="DisabledCode" foreground="#948d80"/>
+  <style name="VisualWhitespace" foreground="#585451"/>
+  <style name="AddedLine" foreground="#8cc093"/>
+  <style name="RemovedLine" foreground="#f58a76"/>
+  <style name="DiffFile" foreground="#7cb9f0" bold="true"/>
+  <style name="DiffLocation" foreground="#b5a8f0"/>
+  <style name="Warning" underlinecolor="#e8b65c" underlinestyle="WaveUnderline"/>
+  <style name="Error" underlinecolor="#f58a76" underlinestyle="WaveUnderline"/>
+  <style name="Info" underlinecolor="#7cb9f0" underlinestyle="WaveUnderline"/>
+  <style name="TestPass" foreground="#8cc093"/>
+  <style name="TestFail" foreground="#f58a76"/>
+</style-scheme>

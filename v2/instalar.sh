@@ -118,6 +118,11 @@ done
 msg "Instalando tus herramientas (owee-tema, owee-carpeta) y el menu Color de carpeta"
 install -m 755 "$AQUI/herramientas/owee-tema" "$AQUI/herramientas/owee-carpeta" "$AQUI/herramientas/owee-animaciones" "$AQUI/herramientas/owee-estilo" "$BIN/"
 install -m 755 "$AQUI/integracion/dolphin/oweekoi-color-carpeta.desktop" "$SHARE/kio/servicemenus/"
+msg "Temas de Konsole, Kate y Qt Creator"
+mkdir -p "$SHARE/konsole" "$SHARE/org.kde.syntax-highlighting/themes" "$CONFIG/QtProject/qtcreator/styles"
+cp "$AQUI"/editores/konsole/*.colorscheme "$AQUI"/editores/konsole/OweeKoi.profile "$SHARE/konsole/"
+cp "$AQUI"/editores/kate/*.theme "$SHARE/org.kde.syntax-highlighting/themes/"
+cp "$AQUI"/editores/qtcreator/*.xml "$CONFIG/QtProject/qtcreator/styles/"
 case ":$PATH:" in *":$BIN:"*) ;; *) aviso "$BIN no esta en tu PATH; añadelo para usar owee-tema." ;; esac
 
 [ "$APLICAR" -eq 1 ] || { msg "Archivos copiados. Nada mas se ha cambiado (--solo-archivos / sin sesion)."; exit 0; }
