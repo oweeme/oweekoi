@@ -1,0 +1,3 @@
+Estilo de aplicacion de OweeKoi 2 para Union (KDE). Derivado del estilo Breeze de Union
+(BSD-2-Clause, Arjen Hiemstra y Akseli Lahtinen); las modificaciones de OweeKoi se publican bajo la misma licencia.
+Nota: el estilo de Qt Widgets de Union 6.8 no pinta box-shadow ni outline, asi que no hay halo exterior.

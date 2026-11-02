@@ -17,6 +17,7 @@ estanque**.
 - **Ventanas «Onda»**: botones en forma de escama de koi, en pastel (coral, ámbar, verde), con anillo de onda al pasar el ratón.
 - **Carpetas de colores** mate y sin brillo, y un menú en Dolphin (*Actions ▸ Color de carpeta*) para marcar las tuyas.
 - **Fondos del estanque** con par claro/oscuro y **protector animado** de kois que sigue el modo.
+- **Estilo de controles** (`owee-estilo`, opcional): botones en cápsula, campos y listas redondeados y un tinte verde pastel al pasar el ratón. Usa *Union*, el motor de estilos nuevo de KDE (aún «en desarrollo» en Plasma 6.8): `owee-estilo probar` lo abre en un solo programa; `activar`/`desactivar` lo cambian en todo el escritorio.
 - **Punteros propios** (`OweeKoi-Punteros`): flecha crema, puntero de clic con anillo de onda y el logo de Owee con ondas al cargar; el resto lo hereda de Breeze.
 - **Tema global completo**: elegir *OweeKoi Oscuro/Claro* en *Temas globales* aplica colores, íconos, estilo, ventanas, punteros, fondo, pantalla de inicio, protector y animaciones de una vez, sin tocar tus paneles. Si marcas «Desktop and window layout», reconstruye la barra superior de OweeKoi.
 - **`owee-tema`**: `claro | oscuro | alternar | auto` (claro de día, oscuro de noche).

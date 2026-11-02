@@ -1,0 +1,14 @@
+{
+    "input-type": "css",
+    "input-version": 1,
+    "name": "OweeKoi",
+    "description": "Esquinas redondeadas y un tinte suave del acento al pasar el raton o enfocar. Derivado del estilo Breeze de Union.",
+    "version": "2.0",
+    "license": "BSD-2-Clause",
+    "url": "https://github.com/oweeme/oweekoi",
+    "authors": [
+        "Owee",
+        "Arjen Hiemstra (estilo Breeze de Union, base)",
+        "Akseli Lahtinen (estilo Breeze de Union, base)"
+    ]
+}

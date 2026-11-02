@@ -102,6 +102,7 @@ mkdir -p "$SHARE/color-schemes" "$SHARE/icons" "$SHARE/wallpapers" "$SHARE/plasm
          "$SHARE/kio/servicemenus" "$BIN"
 cp "$AQUI"/colores/OweeKoi*.colors "$SHARE/color-schemes/"
 rm -rf "$SHARE/icons/OweeKoi";                  cp -r "$AQUI/iconos/OweeKoi" "$SHARE/icons/"
+mkdir -p "$SHARE/union/styles"; rm -rf "$SHARE/union/styles/oweekoi"; cp -r "$AQUI/estilo/oweekoi" "$SHARE/union/styles/"
 rm -rf "$SHARE/icons/OweeKoi-Punteros";         cp -r "$AQUI/punteros/OweeKoi-Punteros" "$SHARE/icons/"
 command -v gtk-update-icon-cache >/dev/null 2>&1 &&
   gtk-update-icon-cache -f -t "$SHARE/icons/OweeKoi" >/dev/null 2>&1 || true
@@ -115,7 +116,7 @@ for m in Dark Light; do
   rm -rf "$SHARE/aurorae/themes/OweeKoi-Onda-$m"; cp -r "$AQUI/ventanas/OweeKoi-Onda-$m" "$SHARE/aurorae/themes/"
 done
 msg "Instalando tus herramientas (owee-tema, owee-carpeta) y el menu Color de carpeta"
-install -m 755 "$AQUI/herramientas/owee-tema" "$AQUI/herramientas/owee-carpeta" "$AQUI/herramientas/owee-animaciones" "$BIN/"
+install -m 755 "$AQUI/herramientas/owee-tema" "$AQUI/herramientas/owee-carpeta" "$AQUI/herramientas/owee-animaciones" "$AQUI/herramientas/owee-estilo" "$BIN/"
 install -m 755 "$AQUI/integracion/dolphin/oweekoi-color-carpeta.desktop" "$SHARE/kio/servicemenus/"
 case ":$PATH:" in *":$BIN:"*) ;; *) aviso "$BIN no esta en tu PATH; añadelo para usar owee-tema." ;; esac
 
@@ -192,6 +193,7 @@ Listo. Cierra sesion y vuelve a entrar para ver la pantalla de inicio y el prote
   - Cambiar de modo:   owee-tema claro | oscuro | alternar | auto
   - Color de carpeta:  clic derecho en una carpeta de Dolphin > Actions > Color de carpeta
   - Modo por la noche: Configuracion del sistema > Temas globales > "Cambiar a modo oscuro por la noche"
+  - Estilo de botones: owee-estilo probar | activar | desactivar   (usa Union, en desarrollo: opcional)
   - Animaciones:       owee-animaciones activar | restaurar
   - Login:             sudo ./v2/login/instalar-login.sh  (y luego Configuracion > Pantalla de inicio de sesion)
   - Para deshacer:     ./v2/desinstalar.sh

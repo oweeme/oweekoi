@@ -1,0 +1,45 @@
+#!/usr/bin/env bash
+# owee-estilo - el estilo de controles de OweeKoi (botones en capsula, campos redondeados).
+#
+# Uso: owee-estilo probar [programa]   abre UN programa con el estilo (por defecto kcalc); no cambia nada mas
+#      owee-estilo activar             lo usa en todo tu escritorio (hay que cerrar sesion)
+#      owee-estilo desactivar          vuelve a Breeze, el estilo normal de KDE
+#      owee-estilo estado
+#
+# Usa Union, el motor de estilos nuevo de KDE. En Plasma 6.8 Union esta marcado "en desarrollo":
+# por eso es opcional y reversible. Si algo se ve raro: owee-estilo desactivar.
+set -euo pipefail
+
+CONFIG="${XDG_CONFIG_HOME:-$HOME/.config}"
+ENV_SH="$CONFIG/plasma-workspace/env/oweekoi-estilo.sh"
+ESTILO=oweekoi
+
+hay_estilo() {
+  [ -d "${XDG_DATA_HOME:-$HOME/.local/share}/union/styles/$ESTILO" ] || [ -d "/usr/share/union/styles/$ESTILO" ]
+}
+[ "${1:-estado}" = estado ] || [ "${1:-}" = desactivar ] || hay_estilo ||
+  { echo "No encuentro el estilo '$ESTILO' (union/styles). Ejecuta ./v2/instalar.sh" >&2; exit 1; }
+[ -e /usr/lib/x86_64-linux-gnu/qt6/plugins/styles/UnionWidgetsStyle.so ] || [ "${1:-estado}" = estado ] || [ "${1:-}" = desactivar ] ||
+  { echo "Esta version de KDE no trae el estilo Union (hace falta Plasma 6.8 o mas)." >&2; exit 1; }
+
+case "${1:-estado}" in
+  probar)
+    shift || true
+    prog="${1:-kcalc}"; [ $# -gt 0 ] && shift
+    command -v "$prog" >/dev/null 2>&1 || { echo "No existe el programa: $prog" >&2; exit 1; }
+    echo "Abriendo $prog con el estilo OweeKoi (cierra la ventana cuando quieras)."
+    UNION_STYLE_NAME=$ESTILO exec "$prog" -style Union "$@" ;;
+  activar)
+    mkdir -p "$(dirname "$ENV_SH")"
+    printf '# OweeKoi: estilo de controles (lo crea owee-estilo; owee-estilo desactivar lo borra)\nexport UNION_STYLE_NAME=%s\n' "$ESTILO" > "$ENV_SH"
+    kwriteconfig6 --file kdeglobals --group KDE --key widgetStyle Union
+    echo "Activado. Cierra sesion y vuelve a entrar para verlo en todo el escritorio." ;;
+  desactivar)
+    rm -f "$ENV_SH"
+    kwriteconfig6 --file kdeglobals --group KDE --key widgetStyle Breeze
+    echo "Vuelto a Breeze. Cierra sesion y vuelve a entrar (o reabre los programas)." ;;
+  estado)
+    echo "estilo de controles: $(kreadconfig6 --file kdeglobals --group KDE --key widgetStyle)"
+    if [ -f "$ENV_SH" ]; then echo "variable de entorno: UNION_STYLE_NAME=$ESTILO (en $ENV_SH)"; else echo "variable de entorno: no definida"; fi ;;
+  *) sed -n 2,11p "$0" | sed 's/^# \{0,1\}//'; exit 1 ;;
+esac
