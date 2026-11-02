@@ -1,0 +1,14 @@
+{
+    "KPackageStructure": "Plasma/Wallpaper",
+    "KPlugin": {
+        "Authors": [{ "Name": "Owee" }],
+        "Description": "Kois nadando en un estanque; agua de tinta o de papel segun el modo (animado, de bajo consumo)",
+        "EnabledByDefault": true,
+        "Icon": "preferences-desktop-wallpaper",
+        "Id": "org.owee.koi",
+        "License": "GPL-3.0+",
+        "Name": "Owee Koi (animado)",
+        "Version": "2.0"
+    },
+    "X-Plasma-API-Minimum-Version": "6.0"
+}

@@ -1,0 +1,10 @@
+{
+  "KPackageStructure": "Wallpaper/Images",
+  "KPlugin": {
+    "Id": "OweeKoi-Estanque",
+    "Name": "OweeKoi - Estanque (claro y oscuro)",
+    "Description": "Kois en un estanque: celadon suave de dia, tinta profunda de noche. Cambia solo con el modo.",
+    "Authors": [{ "Name": "Owee" }],
+    "License": "GPL-3.0+"
+  }
+}
