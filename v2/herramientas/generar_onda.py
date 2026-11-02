@@ -41,78 +41,85 @@ def mezclar(a, b, t):
     return "#%02x%02x%02x" % tuple(round(x + (y - x) * t) for x, y in zip(ca, cb))
 
 
-def ruta_cuerpo(x0, y0, x1, y1, r, redondo_abajo=True):
-    """Rectangulo redondeado como ruta SVG."""
-    abajo = (f"L{x1} {y1 - r}A{r} {r} 0 0 1 {x1 - r} {y1}L{x0 + r} {y1}A{r} {r} 0 0 1 {x0} {y1 - r}"
-             if redondo_abajo else f"L{x1} {y1}L{x0} {y1}")
-    return (f"M{x0} {y0 + r}A{r} {r} 0 0 1 {x0 + r} {y0}L{x1 - r} {y0}A{r} {r} 0 0 1 {x1} {y0 + r}"
-            f"{abajo}Z")
+def a_rgba(h, alfa=1.0):
+    r, g, b = a_rgb(h)
+    return (r, g, b, round(alfa * 255))
 
 
 def marco(modo, estado):
-    """Dibujo completo del marco (coordenadas del marco virtual). estado: activa|inactiva|mascara"""
-    P = OSCURO if modo == "dark" else CLARO
-    x0, y0, x1, y1 = CUERPO
+    """Marco completo como imagen RGBA (a SC veces el tamano). QtSvg ignora clipPath, asi que las
+    piezas se entregan como imagenes del tamano exacto, no como recortes vectoriales."""
+    import io  # noqa: F401
+    from PIL import Image, ImageDraw, ImageFilter
+    SC, SS = 2, 4                                   # escala de salida y supersampling
+    k = SC * SS
+    x0, y0, x1, y1 = (v * k for v in CUERPO)
+    r = R * k
+    lienzo = Image.new("RGBA", (FW * k, FH * k), (0, 0, 0, 0))
     if estado == "mascara":
-        return f'<path d="{ruta_cuerpo(x0, y0, x1, y1, R)}" fill="#000"/>'
-    activa = estado == "activa"
-    if modo == "dark":
-        fondo = P["superficie"] if activa else P["base"]
-        linea = mezclar(fondo, P["texto"], 0.20 if activa else 0.12)
-        onda = P["texto"]
-        onda_op = 0.075 if activa else 0.04
-        sombra, a0 = "#000000", 0.50 if activa else 0.32
-    else:
-        fondo = P["superficie"] if activa else P["base"]
-        linea = mezclar(fondo, "#000000", 0.20 if activa else 0.11)
-        onda = "#ffffff"
-        onda_op = 0.60 if activa else 0.40
-        sombra, a0 = "#1c2a24", 0.26 if activa else 0.15
+        ImageDraw.Draw(lienzo).rounded_rectangle([x0, y0, x1 - 1, y1 - 1], r, fill=(0, 0, 0, 255))
+        return lienzo.resize((FW * SC, FH * SC), Image.LANCZOS)
 
-    partes = []
-    # sombra: capas concentricas de poco alfa (sin filtros: Aurorae no los admite bien)
-    n = 30
-    acum_prev = 0.0
-    for i in range(n):
-        s = 1 - i / n                       # fraccion de la extension (de fuera hacia dentro)
-        s_med = 1 - (i + 0.5) / n
-        c = a0 * (1 - s_med) ** 2.2         # alfa acumulado: ~0 lejos del cuerpo, a0 pegado a el
-        alfa = max(c - acum_prev, 0)
-        acum_prev = c
-        # la capa es la banda mas externa que aun no llega al cuerpo: crece con s
-        ex = {"l": SH_L * s, "r": SH_R * s, "t": SH_T * s, "b": SH_B * s}
-        partes.append(
-            f'<path d="{ruta_cuerpo(x0 - ex["l"], y0 - ex["t"], x1 + ex["r"], y1 + ex["b"], R + 16 * s)}" '
-            f'fill="{sombra}" fill-opacity="{alfa:.4f}"/>')
-    # cuerpo + doble linea de onda
-    partes.append(f'<path d="{ruta_cuerpo(x0, y0, x1, y1, R)}" fill="{fondo}"/>')
-    partes.append(f'<path d="{ruta_cuerpo(x0 + 3.5, y0 + 3.5, x1 - 3.5, y1 - 3.5, R - 3.5)}" fill="none" '
-                  f'stroke="{onda}" stroke-opacity="{onda_op}" stroke-width="1"/>')
-    partes.append(f'<path d="{ruta_cuerpo(x0 + .5, y0 + .5, x1 - .5, y1 - .5, R - .5)}" fill="none" '
-                  f'stroke="{linea}" stroke-width="1"/>')
-    return "".join(partes)
+    P = OSCURO if modo == "dark" else CLARO
+    activa = estado == "activa"
+    fondo = P["superficie"] if activa else P["base"]
+    if modo == "dark":
+        linea = mezclar(fondo, P["texto"], 0.20 if activa else 0.12)
+        onda, onda_a = P["texto"], 0.075 if activa else 0.04
+        sombra, a0 = "#000000", 0.55 if activa else 0.34
+    else:
+        linea = mezclar(fondo, "#000000", 0.20 if activa else 0.11)
+        onda, onda_a = "#ffffff", 0.60 if activa else 0.40
+        sombra, a0 = "#1c2a24", 0.30 if activa else 0.17
+
+    # sombra: cuerpo desenfocado y desplazado hacia abajo
+    mascara = Image.new("L", lienzo.size, 0)
+    ImageDraw.Draw(mascara).rounded_rectangle([x0, y0 + 9 * k, x1 - 1, y1 - 1 + 9 * k], r, fill=255)
+    mascara = mascara.filter(ImageFilter.GaussianBlur(11 * k))
+    mascara = mascara.point(lambda v: round(v * a0))
+    capa = Image.new("RGBA", lienzo.size, a_rgba(sombra))
+    capa.putalpha(mascara)
+    lienzo = Image.alpha_composite(lienzo, capa)
+
+    def dibujar(**kw):
+        c = Image.new("RGBA", lienzo.size, (0, 0, 0, 0))
+        ImageDraw.Draw(c).rounded_rectangle(**kw)
+        return c
+
+    lienzo = Image.alpha_composite(lienzo, dibujar(xy=[x0, y0, x1 - 1, y1 - 1], radius=r, fill=a_rgba(fondo)))
+    inset = round(3.5 * k)
+    lienzo = Image.alpha_composite(lienzo, dibujar(
+        xy=[x0 + inset, y0 + inset, x1 - 1 - inset, y1 - 1 - inset], radius=r - inset,
+        outline=a_rgba(onda, onda_a), width=k))
+    lienzo = Image.alpha_composite(lienzo, dibujar(
+        xy=[x0, y0, x1 - 1, y1 - 1], radius=r, outline=a_rgba(linea), width=k))
+    return lienzo.resize((FW * SC, FH * SC), Image.LANCZOS)
 
 
 def piezas(modo):
-    """Las 9 piezas de cada juego como recortes del marco."""
+    """Las 9 piezas de cada juego, cada una una imagen PNG incrustada de su tamano exacto."""
+    import base64
+    import io
+    SC = 2
     nombres = [["topleft", "top", "topright"], ["left", "center", "right"],
                ["bottomleft", "bottom", "bottomright"]]
-    salida, n = [], 0
+    salida = []
     for estado, ox in ORIGENES.items():
-        dibujo = marco(modo, estado)
+        img = marco(modo, estado)
         prefijo = {"activa": "decoration", "inactiva": "decoration-inactive", "mascara": "mask"}[estado]
         fy = 0
         for f in range(3):
             fx = 0
             for c in range(3):
-                n += 1
                 w, h = COL[c], FIL[f]
+                trozo = img.crop((fx * SC, fy * SC, (fx + w) * SC, (fy + h) * SC))
+                buf = io.BytesIO()
+                trozo.save(buf, "PNG", optimize=True)
+                datos = base64.b64encode(buf.getvalue()).decode()
                 gx, gy = ox + sum(COL[:c]), Y0 + sum(FIL[:f])
                 salida.append(
-                    f'<g id="{prefijo}-{nombres[f][c]}" transform="translate({gx} {gy})">'
-                    f'<clipPath id="k{n}"><rect width="{w}" height="{h}"/></clipPath>'
-                    f'<rect width="{w}" height="{h}" fill="#000" fill-opacity="0.004"/>'
-                    f'<g clip-path="url(#k{n})"><g transform="translate({-fx} {-fy})">{dibujo}</g></g></g>')
+                    f'<image id="{prefijo}-{nombres[f][c]}" x="{gx}" y="{gy}" width="{w}" height="{h}" '
+                    f'preserveAspectRatio="none" xlink:href="data:image/png;base64,{datos}"/>')
                 fx += w
             fy += FIL[f]
     return "".join(salida)
@@ -128,7 +135,7 @@ def decoracion(modo):
     ]
     rects = "".join(f'<rect id="{i}" x="{x}" y="{y}" width="{w}" height="{h}" fill="#ff00ff"/>'
                     for i, x, y, w, h in pistas)
-    return (f'<svg xmlns="http://www.w3.org/2000/svg" width="1100" height="310">'
+    return (f'<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="1100" height="310">'
             f'{piezas(modo)}{rects}</svg>')
 
 
