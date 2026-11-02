@@ -101,7 +101,7 @@ def index_theme():
     """Directorios: carpetas vectoriales + el logo de Owee en tamanos fijos."""
     dirs = ["places/scalable"] + [f"places/{t}" for t in TAMANOS_LOGO]
     txt = ("[Icon Theme]\nName=OweeKoi\nComment=Carpetas de colores suaves y mate, y el logo de Owee\n"
-           "Inherits=breeze,hicolor\nDirectories=" + ",".join(dirs) + "\n\n"
+           "Inherits=breeze,hicolor\nFollowsColorScheme=true\nDirectories=" + ",".join(dirs) + "\n\n"
            "[places/scalable]\nSize=64\nMinSize=16\nMaxSize=512\nType=Scalable\nContext=Places\n")
     for t in TAMANOS_LOGO:
         txt += f"\n[places/{t}]\nSize={t}\nContext=Places\nType=Fixed\n"

@@ -2,6 +2,7 @@
 Name=OweeKoi
 Comment=Carpetas de colores suaves y mate, y el logo de Owee
 Inherits=breeze,hicolor
+FollowsColorScheme=true
 Directories=places/scalable,places/16,places/22,places/24,places/32,places/48,places/64,places/128,places/256,places/512
 
 [places/scalable]

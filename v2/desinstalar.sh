@@ -8,6 +8,7 @@ BIN="${OWEE_BIN:-$HOME/.local/bin}"
 
 ULTIMO="$(ls -1d "$SHARE"/oweekoi/respaldo-v2-* 2>/dev/null | sort | tail -1 || true)"
 
+"$BIN/owee-animaciones" restaurar >/dev/null 2>&1 || true
 systemctl --user disable --now oweekoi-tema.timer >/dev/null 2>&1 || true
 rm -f "$CONFIG/systemd/user/oweekoi-tema.service" "$CONFIG/systemd/user/oweekoi-tema.timer"
 
@@ -28,12 +29,13 @@ rm -rf "$SHARE"/color-schemes/OweeKoiDark.colors "$SHARE"/color-schemes/OweeKoiL
        "$SHARE"/plasma/look-and-feel/org.owee.koi.claro \
        "$SHARE/aurorae/themes/OweeKoi-Onda-Dark" "$SHARE/aurorae/themes/OweeKoi-Onda-Light" \
        "$SHARE/kio/servicemenus/oweekoi-color-carpeta.desktop" \
-       "$BIN/owee-tema" "$BIN/owee-carpeta"
+       "$BIN/owee-tema" "$BIN/owee-carpeta" "$BIN/owee-animaciones"
 
 cat <<EOF
 
 Hecho. Cierra sesion y vuelve a entrar.
 Las carpetas a las que les pusiste color conservan un archivo oculto ".directory"; puedes
 borrarlo desde Dolphin (mostrar archivos ocultos) o dejarlo: no hace dano.
+Si instalaste el login:  sudo ./v2/login/instalar-login.sh --quitar
 Para borrar tambien los respaldos: rm -rf "$SHARE/oweekoi"
 EOF

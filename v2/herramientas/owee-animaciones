@@ -1,0 +1,58 @@
+#!/usr/bin/env bash
+# owee-animaciones - animaciones suaves de OweeKoi para KDE (KWin), sin codigo nuevo.
+#
+# Uso: owee-animaciones activar | restaurar | estado
+#
+#   activar    minimizar con "Magic Lamp" (el genio de macOS), abrir y cerrar con "Scale",
+#              cambio de escritorio con "Slide", y todas las animaciones un 20 % mas lentas y
+#              suaves. Guarda antes tu configuracion para poder volver.
+#   restaurar  deja las animaciones como estaban antes de activar.
+#
+# Solo usa efectos que ya trae KWin; no instala nada ni toca archivos del sistema.
+set -euo pipefail
+
+CONFIG="${XDG_CONFIG_HOME:-$HOME/.config}"
+GUARDADO="$CONFIG/oweekoi/animaciones-antes.conf"
+FACTOR=1.2
+
+leer() { kreadconfig6 --file "$1" --group "$2" --key "$3" 2>/dev/null || true; }
+poner() { kwriteconfig6 --file "$1" --group "$2" --key "$3" "$4"; }
+borrar() { kwriteconfig6 --file "$1" --group "$2" --key "$3" --delete; }
+efecto() { qdbus6 org.kde.KWin /Effects "org.kde.kwin.Effects.$1" "$2" >/dev/null 2>&1 || true; }
+recargar() { qdbus6 org.kde.KWin /KWin reconfigure >/dev/null 2>&1 || true; }
+
+case "${1:-estado}" in
+  activar)
+    if [ ! -f "$GUARDADO" ]; then   # solo la primera vez: asi "restaurar" vuelve al original
+      mkdir -p "$(dirname "$GUARDADO")"
+      {
+        echo "squash=$(leer kwinrc Plugins squashEnabled)"
+        echo "magiclamp=$(leer kwinrc Plugins magiclampEnabled)"
+        echo "factor=$(leer kdeglobals KDE AnimationDurationFactor)"
+      } > "$GUARDADO"
+    fi
+    poner kwinrc Plugins squashEnabled false
+    poner kwinrc Plugins magiclampEnabled true
+    poner kdeglobals KDE AnimationDurationFactor "$FACTOR"
+    efecto unloadEffect squash
+    efecto loadEffect magiclamp
+    recargar
+    echo "Animaciones OweeKoi activadas (Magic Lamp al minimizar, factor $FACTOR)." ;;
+  restaurar)
+    [ -f "$GUARDADO" ] || { echo "No hay estado guardado: las animaciones no se habian cambiado."; exit 0; }
+    # shellcheck disable=SC1090
+    . "$GUARDADO"
+    if [ -n "${squash:-}" ]; then poner kwinrc Plugins squashEnabled "$squash"; else borrar kwinrc Plugins squashEnabled; fi
+    if [ -n "${magiclamp:-}" ]; then poner kwinrc Plugins magiclampEnabled "$magiclamp"; else borrar kwinrc Plugins magiclampEnabled; fi
+    if [ -n "${factor:-}" ]; then poner kdeglobals KDE AnimationDurationFactor "$factor"; else borrar kdeglobals KDE AnimationDurationFactor; fi
+    efecto unloadEffect magiclamp
+    efecto loadEffect squash
+    recargar
+    rm -f "$GUARDADO"
+    echo "Animaciones restauradas." ;;
+  estado)
+    echo "minimizar:  $(qdbus6 org.kde.KWin /Effects org.kde.kwin.Effects.loadedEffects 2>/dev/null | grep -xE 'magiclamp|squash' | tr '\n' ' ')"
+    echo "factor:     $(leer kdeglobals KDE AnimationDurationFactor) (vacio = 1, por defecto)"
+    if [ -f "$GUARDADO" ]; then echo "(hay un estado guardado: 'restaurar' vuelve al original)"; fi ;;
+  *) sed -n 2,12p "$0" | sed 's/^# \{0,1\}//'; exit 1 ;;
+esac

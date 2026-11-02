@@ -14,6 +14,7 @@ BIN="${OWEE_BIN:-$HOME/.local/bin}"
 MODO=auto
 APLICAR=1
 BARRA=1
+ANIMACIONES=1
 HORARIO=0
 SIMULAR=0
 
@@ -26,6 +27,7 @@ Uso: ./v2/instalar.sh [opciones]
   --modo claro|oscuro|auto  Modo con el que arranca (por defecto auto: claro de 07:00 a 19:00)
   --solo-archivos           Solo copia archivos; no cambia la configuracion de Plasma
   --sin-barra               No cambia la barra superior (menu global y reloj centrado)
+  --sin-animaciones         No cambia las animaciones de KWin (Magic Lamp al minimizar, mas suaves)
   --horario                 Ademas activa un temporizador que cambia claro/oscuro segun la hora
   --simular                 Muestra lo que haria, sin tocar nada
   -h, --help                Esta ayuda
@@ -41,6 +43,7 @@ while [ $# -gt 0 ]; do
     --modo) MODO="${2:-}"; shift ;;
     --solo-archivos) APLICAR=0 ;;
     --sin-barra) BARRA=0 ;;
+    --sin-animaciones) ANIMACIONES=0 ;;
     --horario) HORARIO=1 ;;
     --simular) SIMULAR=1 ;;
     -h|--help) uso; exit 0 ;;
@@ -111,7 +114,7 @@ for m in Dark Light; do
   rm -rf "$SHARE/aurorae/themes/OweeKoi-Onda-$m"; cp -r "$AQUI/ventanas/OweeKoi-Onda-$m" "$SHARE/aurorae/themes/"
 done
 msg "Instalando tus herramientas (owee-tema, owee-carpeta) y el menu Color de carpeta"
-install -m 755 "$AQUI/herramientas/owee-tema" "$AQUI/herramientas/owee-carpeta" "$BIN/"
+install -m 755 "$AQUI/herramientas/owee-tema" "$AQUI/herramientas/owee-carpeta" "$AQUI/herramientas/owee-animaciones" "$BIN/"
 install -m 755 "$AQUI/integracion/dolphin/oweekoi-color-carpeta.desktop" "$SHARE/kio/servicemenus/"
 case ":$PATH:" in *":$BIN:"*) ;; *) aviso "$BIN no esta en tu PATH; añadelo para usar owee-tema." ;; esac
 
@@ -162,6 +165,12 @@ if [ "$BARRA" -eq 1 ] && command -v qdbus6 >/dev/null 2>&1 && pgrep -x plasmashe
   fi
 fi
 
+# --- 3b. animaciones --------------------------------------------------------
+if [ "$ANIMACIONES" -eq 1 ] && command -v qdbus6 >/dev/null 2>&1; then
+  msg "Animaciones suaves (Magic Lamp al minimizar)"
+  "$BIN/owee-animaciones" activar || aviso "No pude cambiar las animaciones."
+fi
+
 # --- 4. cambio automatico por hora (opcional) -------------------------------
 if [ "$HORARIO" -eq 1 ]; then
   msg "Activando el cambio claro/oscuro por hora (temporizador de usuario)"
@@ -176,6 +185,8 @@ cat <<EOF
 Listo. Cierra sesion y vuelve a entrar para ver la pantalla de inicio y el protector.
   - Cambiar de modo:   owee-tema claro | oscuro | alternar | auto
   - Color de carpeta:  clic derecho en una carpeta de Dolphin > Actions > Color de carpeta
+  - Animaciones:       owee-animaciones activar | restaurar
+  - Login:             sudo ./v2/login/instalar-login.sh  (y luego Configuracion > Pantalla de inicio de sesion)
   - Para deshacer:     ./v2/desinstalar.sh
 EOF
 [ "$HORARIO" -eq 1 ] || echo "  - Cambio automatico por hora (opcional):  ./v2/instalar.sh --horario"

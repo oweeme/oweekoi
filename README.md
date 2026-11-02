@@ -18,6 +18,8 @@ estanque**.
 - **Carpetas de colores** mate y sin brillo, y un menú en Dolphin (*Actions ▸ Color de carpeta*) para marcar las tuyas.
 - **Fondos del estanque** con par claro/oscuro y **protector animado** de kois que sigue el modo.
 - **`owee-tema`**: `claro | oscuro | alternar | auto` (claro de día, oscuro de noche).
+- **Animaciones** suaves de KWin (`owee-animaciones`): Magic Lamp al minimizar y todo un 20 % más lento y calmado.
+- **Login**: el Plasma Login Manager no usa temas, usa un *fondo*; `sudo ./v2/login/instalar-login.sh` copia el tema y lo eliges en *Configuración del sistema → Pantalla de inicio de sesión*.
 
 ```bash
 git clone -b v2 https://github.com/oweeme/oweekoi.git && cd oweekoi
