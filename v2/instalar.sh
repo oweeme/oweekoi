@@ -125,6 +125,8 @@ case ":$PATH:" in *":$BIN:"*) ;; *) aviso "$BIN no esta en tu PATH; añadelo par
 # --- 2. aplicar -------------------------------------------------------------
 k() { kwriteconfig6 --file "$@"; }
 msg "Aplicando OweeKoi ($MODO)"
+aviso "Al cambiar los ajustes de GTK, algunas aplicaciones GTK y Electron (navegadores, VS Code, Claude) pueden cerrarse"
+aviso "de golpe por un fallo de dconf en Ubuntu 24.04. Guarda tu trabajo antes; se reabren sin problema."
 plasma-apply-colorscheme "$([ "$MODO" = claro ] && echo OweeKoiLight || echo OweeKoiDark)" >/dev/null 2>&1 ||
   aviso "No pude aplicar el esquema de color."
 k kdeglobals --group Icons --key Theme OweeKoi
