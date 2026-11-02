@@ -31,6 +31,8 @@ git clone -b v2 https://github.com/oweeme/oweekoi.git && cd oweekoi
 ./v2/desinstalar.sh              # restaura tu configuración anterior
 ```
 
+**¿Quieres modificarlo?** Empieza por [`v2/docs/MANUAL.md`](v2/docs/MANUAL.md): una tabla «quiero cambiar X → edito Y → ejecuto Z», cada pieza explicada y cómo probarla sin riesgo. Las trampas técnicas están en [`v2/docs/NOTAS-TECNICAS.md`](v2/docs/NOTAS-TECNICAS.md). `./v2/regenerar.sh` reconstruye todo lo generado.
+
 Todo se genera con scripts en `v2/herramientas/` (`paleta.py` es la fuente única de colores).
 Antes de cambiar nada se respalda tu configuración. Licencia: GPL-3.0.
 

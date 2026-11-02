@@ -162,4 +162,6 @@ if __name__ == "__main__":
     guardar(con_kois(fondos["claro"]), PAQUETE / "contents" / "images" / "2560x1440.jpg")
     guardar(con_kois(fondos["oscuro"]), PAQUETE / "contents" / "images_dark" / "2560x1440.jpg")
     prev = con_kois(fondos["oscuro"]).resize((400, 225), Image.LANCZOS)
-    guardar(prev, PAQUETE / "contents" / "screenshot.jpg", 88)
+    ruta = PAQUETE / "contents" / "screenshot.png"   # Plasma busca screenshot.png como vista previa
+    prev.save(ruta, "PNG", optimize=True)
+    print(f"{ruta.relative_to(RAIZ)}  {ruta.stat().st_size // 1024} KB")
