@@ -21,7 +21,6 @@ fi
 
 S="$PREFIJO/share"
 DESTINOS=(
-  "$S/plasma/wallpapers/org.owee.koi"
   "$S/wallpapers/OweeKoi-Estanque"
   "$S/icons/OweeKoi"
   "$S/icons/OweeKoi-Punteros"
@@ -37,10 +36,11 @@ if [ "$MODO" = quitar ]; then
 fi
 
 echo "==> Copiando el tema a $S"
-install -d "$S/plasma/wallpapers" "$S/wallpapers" "$S/icons" "$S/plasma/desktoptheme" "$S/color-schemes"
+install -d "$S/wallpapers" "$S/icons" "$S/plasma/desktoptheme" "$S/color-schemes"
 rm -rf "${DESTINOS[@]}"
-cp -r "$AQUI/plasma/wallpapers/org.owee.koi"      "$S/plasma/wallpapers/"
 cp -r "$AQUI/fondos/OweeKoi-Estanque"             "$S/wallpapers/"
+# nombre propio: asi no se confunde con la copia de tu carpeta personal, que el login no puede leer
+sed -i 's/"Name": "[^"]*"/"Name": "OweeKoi - Estanque (login)"/' "$S/wallpapers/OweeKoi-Estanque/metadata.json"
 cp -r "$AQUI/iconos/OweeKoi"                      "$S/icons/"
 cp -r "$AQUI/punteros/OweeKoi-Punteros"           "$S/icons/"
 cp -r "$AQUI/plasma/desktoptheme/OweeKoi-Onda"    "$S/plasma/desktoptheme/"
@@ -52,10 +52,10 @@ command -v gtk-update-icon-cache >/dev/null 2>&1 && gtk-update-icon-cache -f -t 
 cat <<'EOF'
 
 Listo. Ahora, sin sudo y en tu sesion:
-  1. Abre  Configuracion del sistema > Pantalla de inicio de sesion  (Login Screen).
-  2. En Apariencia, en el tipo de fondo elige  "Owee Koi (animado)".
-  3. Usa el boton para sincronizar tus ajustes de Plasma con la pantalla de inicio de sesion
-     (colores, estilo, iconos y cursor). Te pedira tu contrasena.
-  4. Para verlo: cierra sesion (o reinicia). Para deshacerlo: el mismo modulo, restablecer.
+  1. Cierra y vuelve a abrir  Configuracion del sistema > Pantalla de inicio de sesion.
+  2. "Configure Appearance...": tipo de fondo  Image  y elige  "OweeKoi - Estanque (login)".
+     (El fondo animado de kois no esta disponible en el login: ese modulo solo admite fondos estandar.)
+  3. "Apply Plasma Settings...": copia tus colores, estilo, iconos y cursor al login. Pide tu contrasena.
+  4. Para verlo: bloquea con Super+L o cierra sesion.
 Para quitar lo copiado:  sudo ./v2/login/instalar-login.sh --quitar
 EOF
