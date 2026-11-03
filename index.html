@@ -3,9 +3,9 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>OweeKoi 2 · tema para KDE Plasma 6</title>
-<meta name="description" content="OweeKoi 2: tema propio para KDE Plasma 6. Tinta y papel, ondas de estanque, kois, carpetas de colores y modo claro/oscuro. Solo para KDE.">
-<meta property="og:title" content="OweeKoi 2 · tema para KDE Plasma 6">
+<title>OweeKoi · tema para KDE Plasma 6</title>
+<meta name="description" content="OweeKoi: tema propio para KDE Plasma 6. Tinta y papel, ondas de estanque, kois, carpetas de colores y modo claro/oscuro. Solo para KDE.">
+<meta property="og:title" content="OweeKoi · tema para KDE Plasma 6">
 <meta property="og:description" content="Tinta y papel, ondas de estanque, kois y carpetas de colores. Solo para KDE Plasma 6.">
 <meta property="og:image" content="https://oweeme.github.io/oweekoi/img/fondo-claro.jpg">
 <link rel="icon" href="img/favicon.png">
@@ -51,6 +51,8 @@ button.pill:hover { border-color: var(--accent); }
 .hero img.logo { width: 112px; height: 112px; }
 .hero h1 { font-size: clamp(2rem, 6vw, 3.2rem); line-height: 1.1; margin: 16px 0 10px; letter-spacing: -.02em; }
 .hero p.lead { max-width: 640px; margin: 0 auto 22px; color: var(--soft); font-size: 1.1rem; }
+.ver { margin: 0 0 14px; color: var(--soft); }
+.ver code { background: var(--surface); border-radius: 5px; padding: 1px 8px; font-weight: 600; color: var(--text); }
 .badge { display: inline-block; font-size: .8rem; font-weight: 600; color: var(--on-accent); background: var(--accent-bg);
   border-radius: 999px; padding: 4px 12px; margin-bottom: 8px; }
 .btns { display: flex; gap: 10px; justify-content: center; flex-wrap: wrap; }
@@ -112,12 +114,13 @@ html[data-lang="en"] div.en, html[data-lang="en"] p.en, html[data-lang="en"] li.
 <header class="top">
   <div class="wrap">
     <img src="img/logo.png" alt="">
-    <strong>OweeKoi 2</strong>
+    <strong>OweeKoi</strong>
     <nav>
       <a class="hide-m" href="#incluye"><span class="es">Qué incluye</span><span class="en">Features</span></a>
       <a href="#instalar"><span class="es">Instalar</span><span class="en">Install</span></a>
       <a class="hide-m" href="#uso"><span class="es">Uso</span><span class="en">Usage</span></a>
       <a class="hide-m" href="#personalizar"><span class="es">Personalizar</span><span class="en">Customize</span></a>
+      <a class="hide-m" href="#autor"><span class="es">Autor</span><span class="en">Author</span></a>
       <button class="pill" id="lang" type="button" aria-label="Idioma / Language">EN</button>
       <button class="pill" id="theme" type="button" aria-label="Claro / oscuro">◐</button>
     </nav>
@@ -128,7 +131,8 @@ html[data-lang="en"] div.en, html[data-lang="en"] p.en, html[data-lang="en"] li.
 <div class="wrap hero">
   <img class="logo" src="img/logo.png" alt="Logo de Owee">
   <div><span class="badge"><span class="es">Solo para KDE Plasma 6</span><span class="en">KDE Plasma 6 only</span></span></div>
-  <h1>OweeKoi 2</h1>
+  <h1>OweeKoi</h1>
+  <p class="ver"><span class="es">Versión actual: <code>v2</code></span><span class="en">Current version: <code>v2</code></span></p>
   <p class="lead">
     <span class="es">Un tema propio para KDE: tinta y papel, ondas de estanque, kois que nadan en el protector y carpetas de colores. Claro y oscuro, sin descargar nada de terceros.</span>
     <span class="en">A hand-made KDE theme: ink and paper, pond ripples, koi swimming in the screensaver and colored folders. Light and dark, nothing downloaded from third parties.</span>
@@ -196,7 +200,7 @@ html[data-lang="en"] div.en, html[data-lang="en"] p.en, html[data-lang="en"] li.
     </li>
     <li>
       <h3><span class="es">Descarga el tema</span><span class="en">Get the theme</span></h3>
-      <p><span class="es">OweeKoi 2 está en la rama <code>v2</code>.</span><span class="en">OweeKoi 2 lives on the <code>v2</code> branch.</span></p>
+      <p><span class="es">Cada versión vive en su propia rama. La actual es <code>v2</code>.</span><span class="en">Each version lives on its own branch. The current one is <code>v2</code>.</span></p>
       <div class="code"><pre>git clone -b v2 https://github.com/oweeme/oweekoi.git
 cd oweekoi</pre><button class="copy" type="button">Copiar</button></div>
     </li>
@@ -252,17 +256,31 @@ cd oweekoi</pre><button class="copy" type="button">Copiar</button></div>
   <p style="margin-top:10px"><span class="es">Para regenerar necesitas además <code>python3</code>, <code>Pillow</code> y <code>xcursorgen</code>. La receta completa, pieza por pieza, está en el <a href="https://github.com/oweeme/oweekoi/blob/v2/v2/docs/MANUAL.md">manual</a> y las trampas técnicas en las <a href="https://github.com/oweeme/oweekoi/blob/v2/v2/docs/NOTAS-TECNICAS.md">notas técnicas</a>.</span><span class="en">To regenerate you also need <code>python3</code>, <code>Pillow</code> and <code>xcursorgen</code>. The full recipe, piece by piece, is in the <a href="https://github.com/oweeme/oweekoi/blob/v2/v2/docs/MANUAL.md">manual</a> and the technical gotchas in the <a href="https://github.com/oweeme/oweekoi/blob/v2/v2/docs/NOTAS-TECNICAS.md">technical notes</a> (Spanish).</span></p>
 </section>
 
-<section id="v1">
-  <h2><span class="es">¿Y la versión 1?</span><span class="en">What about version 1?</span></h2>
-  <p><span class="es">La rama <code>main</code> conserva OweeKoi 1: un tema oscuro basado en WhiteSur con perfiles para portátil y PC (ahorro de energía, arranque rápido). OweeKoi 2 es un tema propio y no usa WhiteSur.</span><span class="en">The <code>main</code> branch keeps OweeKoi 1: a dark WhiteSur-based theme with laptop and PC profiles (power saving, fast boot). OweeKoi 2 is a theme of its own and does not use WhiteSur.</span></p>
+<section id="versiones">
+  <h2><span class="es">Versiones</span><span class="en">Versions</span></h2>
+  <p class="sub"><span class="es">Las versiones nuevas se publican como ramas <code>v1</code>, <code>v2</code>, <code>v3</code>… Cada una se instala con su propio comando.</span><span class="en">New versions are published as branches <code>v1</code>, <code>v2</code>, <code>v3</code>… Each one installs with its own command.</span></p>
+  <div class="table-wrap"><table>
+    <tr><th><span class="es">Versión</span><span class="en">Version</span></th><th><span class="es">Qué es</span><span class="en">What it is</span></th><th><span class="es">Instalar</span><span class="en">Install</span></th></tr>
+    <tr><td><strong>v2</strong> <span class="es">(actual)</span><span class="en">(current)</span></td><td><span class="es">Tema propio, sin WhiteSur: tinta y papel, ondas, carpetas de colores, claro y oscuro.</span><span class="en">A theme of its own, no WhiteSur: ink and paper, ripples, colored folders, light and dark.</span></td><td><code>git clone -b v2 …</code><br><code>./v2/instalar.sh</code></td></tr>
+    <tr><td><strong>v1</strong></td><td><span class="es">Tema oscuro basado en WhiteSur con perfiles para portátil y PC (ahorro de energía, arranque rápido). Está en la rama <code>main</code>.</span><span class="en">Dark WhiteSur-based theme with laptop and PC profiles (power saving, fast boot). It is on the <code>main</code> branch.</span></td><td><code>git clone https://github.com/oweeme/oweekoi.git</code><br><code>./install.sh</code></td></tr>
+  </table></div>
+</section>
+
+<section id="autor">
+  <h2><span class="es">Autor</span><span class="en">Author</span></h2>
+  <div class="card" style="max-width:520px">
+    <h3>Hector Martinez</h3>
+    <p><span class="es">Creador de OweeKoi y de Owee. Si encuentras un fallo o quieres proponer algo, escríbeme o abre un <em>issue</em> en GitHub.</span><span class="en">Creator of OweeKoi and Owee. If you find a bug or want to suggest something, write to me or open an <em>issue</em> on GitHub.</span></p>
+    <p style="margin-top:10px"><a href="mailto:hector@oweeme.com">hector@oweeme.com</a> · <a href="https://oweeme.com">oweeme.com</a> · <a href="https://github.com/oweeme">github.com/oweeme</a></p>
+  </div>
 </section>
 </div>
 </main>
 
 <footer>
   <div class="wrap">
-    <span><span class="es">OweeKoi 2 · licencia GPL-3.0. El estilo de controles deriva del estilo Breeze de Union (BSD-2-Clause).</span><span class="en">OweeKoi 2 · GPL-3.0 license. The control style derives from Union's Breeze style (BSD-2-Clause).</span></span>
-    <span><a href="https://github.com/oweeme/oweekoi">GitHub</a> · <a href="https://oweeme.com">oweeme.com</a></span>
+    <span><span class="es">OweeKoi · licencia GPL-3.0. El estilo de controles deriva del estilo Breeze de Union (BSD-2-Clause).</span><span class="en">OweeKoi · GPL-3.0 license. The control style derives from Union's Breeze style (BSD-2-Clause).</span></span>
+    <span><a href="https://github.com/oweeme/oweekoi">GitHub</a> · Hector Martinez · <a href="https://oweeme.com">oweeme.com</a></span>
   </div>
 </footer>
 
