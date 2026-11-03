@@ -10,103 +10,255 @@
 <meta property="og:image" content="https://oweeme.github.io/oweekoi/img/fondo-claro.jpg">
 <link rel="icon" href="img/favicon.png">
 <style>
+/* Colores y formas tomados del propio tema (v2/herramientas/paleta.py y generar_onda.py) */
+@font-face { font-family: "Inter"; font-weight: 400; font-style: normal; font-display: swap; src: url(fonts/Inter-Regular.woff2) format("woff2"); }
+@font-face { font-family: "Inter"; font-weight: 600; font-style: normal; font-display: swap; src: url(fonts/Inter-SemiBold.woff2) format("woff2"); }
+@font-face { font-family: "Inter"; font-weight: 700; font-style: normal; font-display: swap; src: url(fonts/Inter-Bold.woff2) format("woff2"); }
+
 :root {
-  --bg: #f2eee2; --panel: #faf7ee; --surface: #ebe6d6; --border: #d6cfbb;
-  --text: #252223; --soft: #5f5a55; --accent: #2f6f3b; --accent-bg: #9cd5a3; --on-accent: #0f1d0b;
-  --coral: #b93a26; --code: #252223; --code-text: #ece6d6;
+  /* papel (OweeKoiLight) */
+  --base: #f2eee2; --vista: #faf7ee; --superficie: #ebe6d6; --elevado: #fffdf7; --borde: #d6cfbb;
+  --texto: #252223; --suave: #5f5a55; --acento: #488c54; --sel: #9cd5a3; --sobre-sel: #0f1d0b;
+  --coral: #c9412c; --enlace: #1d62a0; --positivo: #2b7a4b; --neutro: #8f5f00;
+  --b-cerrar: #d9705d; --b-minimizar: #d9ab4f; --b-maximizar: #74ad7d;
+  --agua: url(img/agua-claro.jpg); --onda: rgba(255, 255, 255, .55);
+  --radio: 12px;
 }
 @media (prefers-color-scheme: dark) {
   :root:not([data-theme="light"]) {
-    --bg: #262325; --panel: #2d2a2c; --surface: #353234; --border: #55514f;
-    --text: #ece6d6; --soft: #b8b0a1; --accent: #93cf9b; --accent-bg: #8cc093; --on-accent: #0f1d0b;
-    --coral: #f58a76; --code: #1c1a1b; --code-text: #ece6d6;
+    /* tinta (OweeKoiDark) */
+    --base: #2d2a2c; --vista: #262325; --superficie: #353234; --elevado: #3d3a3c; --borde: #55514f;
+    --texto: #ece6d6; --suave: #b8b0a1; --acento: #93cf9b; --sel: #8cc093; --sobre-sel: #0f1d0b;
+    --coral: #f58a76; --enlace: #7cb9f0; --positivo: #7bd88f; --neutro: #e8b65c;
+    --b-cerrar: #e08a78; --b-minimizar: #e3bb70; --b-maximizar: #8cc093;
+    --agua: url(img/agua-oscuro.jpg); --onda: rgba(236, 230, 214, .32);
   }
 }
 :root[data-theme="dark"] {
-  --bg: #262325; --panel: #2d2a2c; --surface: #353234; --border: #55514f;
-  --text: #ece6d6; --soft: #b8b0a1; --accent: #93cf9b; --accent-bg: #8cc093; --on-accent: #0f1d0b;
-  --coral: #f58a76; --code: #1c1a1b; --code-text: #ece6d6;
+  --base: #2d2a2c; --vista: #262325; --superficie: #353234; --elevado: #3d3a3c; --borde: #55514f;
+  --texto: #ece6d6; --suave: #b8b0a1; --acento: #93cf9b; --sel: #8cc093; --sobre-sel: #0f1d0b;
+  --coral: #f58a76; --enlace: #7cb9f0; --positivo: #7bd88f; --neutro: #e8b65c;
+  --b-cerrar: #e08a78; --b-minimizar: #e3bb70; --b-maximizar: #8cc093;
+  --agua: url(img/agua-oscuro.jpg); --onda: rgba(236, 230, 214, .32);
 }
+
 * { box-sizing: border-box; }
-html { scroll-behavior: smooth; }
+html { scroll-behavior: smooth; scroll-padding-top: 70px; }
 body {
-  margin: 0; background: var(--bg); color: var(--text);
-  font: 16px/1.65 system-ui, -apple-system, "Segoe UI", Inter, Roboto, sans-serif;
+  margin: 0; background: var(--base); color: var(--texto);
+  font: 16px/1.65 Inter, system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
 }
-a { color: var(--accent); }
+a { color: var(--enlace); }
+code { font-family: ui-monospace, "JetBrains Mono", "Fira Code", Consolas, monospace; }
 .wrap { max-width: 980px; margin: 0 auto; padding: 0 16px; }
-header.top { border-bottom: 1px solid var(--border); background: var(--panel); position: sticky; top: 0; z-index: 5; }
-header.top .wrap { display: flex; align-items: center; gap: 14px; height: 56px; }
-header.top img { width: 30px; height: 30px; }
-header.top strong { font-size: 1.05rem; }
-header.top nav { margin-left: auto; display: flex; gap: 6px; align-items: center; flex-wrap: wrap; }
-header.top nav a { color: var(--soft); text-decoration: none; padding: 6px 10px; border-radius: 8px; font-size: .92rem; }
-header.top nav a:hover { background: var(--surface); color: var(--text); }
-button.pill {
-  font: inherit; font-size: .85rem; cursor: pointer; color: var(--text);
-  background: var(--surface); border: 1px solid var(--border); border-radius: 999px; padding: 5px 12px;
+
+/* ---- barra superior (como el panel de Plasma) ---- */
+header.top {
+  position: sticky; top: 0; z-index: 10;
+  background: color-mix(in srgb, var(--base) 84%, transparent);
+  -webkit-backdrop-filter: blur(14px); backdrop-filter: blur(14px);
+  border-bottom: 1px solid var(--borde);
 }
-button.pill:hover { border-color: var(--accent); }
-.hero { padding-top: 64px; padding-bottom: 40px; text-align: center; }
-.hero img.logo { width: 112px; height: 112px; }
-.hero h1 { font-size: clamp(2rem, 6vw, 3.2rem); line-height: 1.1; margin: 16px 0 10px; letter-spacing: -.02em; }
-.hero p.lead { max-width: 640px; margin: 0 auto 22px; color: var(--soft); font-size: 1.1rem; }
-.ver { margin: 0 0 14px; color: var(--soft); }
-.ver code { background: var(--surface); border-radius: 5px; padding: 1px 8px; font-weight: 600; color: var(--text); }
-.badge { display: inline-block; font-size: .8rem; font-weight: 600; color: var(--on-accent); background: var(--accent-bg);
-  border-radius: 999px; padding: 4px 12px; margin-bottom: 8px; }
+header.top .wrap { display: flex; align-items: center; gap: 12px; height: 56px; }
+header.top img { width: 30px; height: 30px; }
+header.top strong { font-size: 1.05rem; letter-spacing: -.01em; }
+header.top nav { margin-left: auto; display: flex; gap: 4px; align-items: center; flex-wrap: wrap; }
+header.top nav a { color: var(--suave); text-decoration: none; padding: 6px 10px; border-radius: 8px; font-size: .92rem; }
+header.top nav a:hover { background: var(--superficie); color: var(--texto); }
+button.pill {
+  font: inherit; font-size: .85rem; cursor: pointer; color: var(--texto);
+  background: var(--superficie); border: 1px solid var(--borde); border-radius: 999px; padding: 5px 12px;
+}
+button.pill:hover { border-color: var(--acento); }
+
+/* ---- estanque con kois (igual que el protector de pantalla) ---- */
+.estanque {
+  --H: clamp(440px, 64vw, 580px);
+  position: relative; overflow: hidden; height: var(--H);
+  background: var(--agua) center / cover no-repeat;
+  display: grid; place-items: center; padding: 0 16px;
+}
+.estanque::after { /* funde el agua con el papel o la tinta de la página */
+  content: ""; position: absolute; inset: auto 0 0 0; height: 90px; pointer-events: none;
+  background: linear-gradient(to bottom, transparent, var(--base));
+}
+.anillo { /* ondas de agua */
+  position: absolute; width: 190px; height: 190px; border-radius: 50%; border: 1px solid var(--onda);
+  opacity: 0; animation: onda 9s ease-out infinite; pointer-events: none;
+}
+.anillo::after { content: ""; position: absolute; inset: 22px; border-radius: 50%; border: 1px solid var(--onda); }
+.anillo:nth-of-type(1) { left: 6%; top: 8%; animation-delay: 0s; }
+.anillo:nth-of-type(2) { right: 8%; top: 22%; animation-delay: 3s; width: 230px; height: 230px; }
+.anillo:nth-of-type(3) { left: 30%; bottom: 6%; animation-delay: 6s; width: 160px; height: 160px; }
+@keyframes onda { 0% { transform: scale(.35); opacity: 0; } 15% { opacity: 1; } 100% { transform: scale(1.25); opacity: 0; } }
+
+.giro { /* centro de la órbita; gira como en main.qml */
+  position: absolute; width: 0; height: 0; left: calc(var(--cx) * 100%); top: calc(var(--cy) * 100%);
+  animation: girar var(--periodo) linear infinite;
+}
+@keyframes girar {
+  from { transform: rotate(calc(var(--fase) * 1deg)); }
+  to { transform: rotate(calc(var(--fase) * 1deg + var(--sentido) * 360deg)); }
+}
+.orb { position: absolute; left: calc(var(--H) * var(--orbita)); top: 0; transform: rotate(calc(var(--sentido) * -90deg)); }
+.koi {
+  position: absolute; width: var(--w); aspect-ratio: 876 / 550;
+  background-size: 400% 400%; background-repeat: no-repeat;
+  transform: translate(-47.83%, -50.55%);
+  animation: nadar 1.28s steps(1, end) infinite;
+}
+.k1 { --w: clamp(150px, 24vw, 250px); background-image: url(img/koi-kohaku.webp); }
+.k2 { --w: clamp(150px, 24vw, 250px); background-image: url(img/koi-showa.webp); }
+.k3 { --w: clamp(120px, 19vw, 200px); background-image: url(img/koi-ogon.webp); }
+@keyframes nadar {
+  0% { background-position: 0% 0%; } 6.25% { background-position: 33.333% 0%; }
+  12.5% { background-position: 66.667% 0%; } 18.75% { background-position: 100% 0%; }
+  25% { background-position: 0% 33.333%; } 31.25% { background-position: 33.333% 33.333%; }
+  37.5% { background-position: 66.667% 33.333%; } 43.75% { background-position: 100% 33.333%; }
+  50% { background-position: 0% 66.667%; } 56.25% { background-position: 33.333% 66.667%; }
+  62.5% { background-position: 66.667% 66.667%; } 68.75% { background-position: 100% 66.667%; }
+  75% { background-position: 0% 100%; } 81.25% { background-position: 33.333% 100%; }
+  87.5% { background-position: 66.667% 100%; } 93.75% { background-position: 100% 100%; }
+  100% { background-position: 0% 0%; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .giro, .koi, .anillo { animation: none; }
+  .anillo { opacity: .8; transform: scale(.8); }
+}
+
+/* ---- ventana «Onda»: doble línea de onda, esquinas de 12 px y botones de escama ---- */
+.ventana, .card, .shots figure {
+  position: relative; background: var(--vista); border: 1px solid var(--borde); border-radius: var(--radio);
+}
+.ventana::after, .card::after, .shots figure::after { /* el segundo anillo, 3 px dentro y más tenue */
+  content: ""; position: absolute; inset: 3px; border: 1px solid color-mix(in srgb, var(--borde) 45%, transparent);
+  border-radius: calc(var(--radio) - 3px); pointer-events: none;
+}
+.barra { /* barra de título de 31 px como la del decorado */
+  display: flex; align-items: center; gap: 8px; height: 31px; padding: 0 14px;
+  background: var(--superficie); border-bottom: 1px solid var(--borde);
+  border-radius: calc(var(--radio) - 1px) calc(var(--radio) - 1px) 0 0;
+  font-size: .8rem; color: var(--suave); font-weight: 600;
+}
+.barra .t { flex: 1; text-align: center; padding-left: 52px; }
+.escamas { display: flex; gap: 7px; order: 2; }
+.escamas i {
+  width: 13px; height: 13px; border-radius: 50%; position: relative;
+  background: var(--c); box-shadow: inset 0 0 0 3px color-mix(in srgb, var(--vista) 38%, transparent);
+}
+.escamas i:nth-child(1) { --c: var(--b-cerrar); } .escamas i:nth-child(2) { --c: var(--b-minimizar); } .escamas i:nth-child(3) { --c: var(--b-maximizar); }
+.escamas i:hover::after { content: ""; position: absolute; inset: -4px; border-radius: 50%; border: 1px solid var(--c); }
+
+.ventana.hero { width: min(640px, 100%); position: relative; z-index: 2; text-align: center;
+  background: color-mix(in srgb, var(--vista) 84%, transparent);
+  -webkit-backdrop-filter: blur(3px); backdrop-filter: blur(3px); }
+.ventana.hero .cuerpo { padding: 26px 24px 28px; }
+.hero img.logo { width: 92px; height: 92px; }
+.hero h1 { font-size: clamp(2.1rem, 6vw, 3rem); line-height: 1.1; margin: 10px 0 4px; letter-spacing: -.02em; }
+.hero .ver { margin: 0 0 12px; color: var(--suave); }
+.ver code, .card code, td code, li code, p code, .sub code {
+  background: var(--superficie); border-radius: 6px; padding: 1px 7px; font-size: .86em;
+}
+.hero p.lead { margin: 0 auto 20px; max-width: 520px; color: var(--suave); }
+.badge { display: inline-block; font-size: .8rem; font-weight: 600; color: var(--sobre-sel); background: var(--sel);
+  border-radius: 999px; padding: 3px 12px; }
 .btns { display: flex; gap: 10px; justify-content: center; flex-wrap: wrap; }
-.btn { text-decoration: none; font-weight: 600; padding: 10px 20px; border-radius: 10px; border: 1px solid var(--border);
-  color: var(--text); background: var(--panel); }
-.btn.main { background: var(--accent-bg); color: var(--on-accent); border-color: transparent; }
-.btn:hover { filter: brightness(.96); }
-section { padding: 36px 0; }
-section h2 { font-size: 1.6rem; margin: 0 0 6px; letter-spacing: -.01em; }
-section p.sub { color: var(--soft); margin: 0 0 22px; }
+.btn {
+  position: relative; text-decoration: none; font-weight: 600; padding: 9px 20px; border-radius: 10px;
+  border: 1px solid var(--borde); color: var(--texto); background: var(--elevado);
+}
+.btn.main { background: var(--sel); color: var(--sobre-sel); border-color: transparent; }
+.btn:hover::after { /* halo de onda al pasar el ratón */
+  content: ""; position: absolute; inset: -5px; border-radius: 14px; border: 1px solid var(--acento);
+  animation: halo .7s ease-out forwards; pointer-events: none;
+}
+@keyframes halo { from { opacity: 1; transform: scale(.94); } to { opacity: 0; transform: scale(1.08); } }
+
+/* ---- secciones ---- */
+section { padding: 34px 0; }
+section h2 { font-size: 1.6rem; margin: 0 0 6px; letter-spacing: -.015em; display: flex; align-items: center; gap: 12px; }
+section h2::before { /* glifo de ondas */
+  content: ""; flex: none; width: 26px; height: 26px; border-radius: 50%;
+  background: repeating-radial-gradient(circle, var(--acento) 0 2px, transparent 2px 6px);
+  opacity: .85;
+}
+section p.sub { color: var(--suave); margin: 0 0 22px; }
 .shots { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
-.shots figure { margin: 0; background: var(--panel); border: 1px solid var(--border); border-radius: 14px; overflow: hidden; }
-.shots img { display: block; width: 100%; height: auto; }
-.shots figcaption { padding: 8px 14px; font-size: .88rem; color: var(--soft); }
-.shots .wide { grid-column: 1 / -1; }
+.shots figure { margin: 0; overflow: hidden; }
+.shots img { display: block; width: 100%; height: auto; border-radius: calc(var(--radio) - 1px) calc(var(--radio) - 1px) 0 0; }
+.shots figcaption { padding: 9px 14px 11px; font-size: .88rem; color: var(--suave); }
 .cards { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 14px; }
-.card { background: var(--panel); border: 1px solid var(--border); border-radius: 14px; padding: 16px 18px; }
-.card h3 { margin: 0 0 4px; font-size: 1.02rem; }
-.card p { margin: 0; color: var(--soft); font-size: .94rem; }
-.card code, td code, li code, p code { background: var(--surface); border-radius: 5px; padding: 1px 6px; font-size: .88em; }
+.card { padding: 16px 18px; }
+.card h3 { margin: 0 0 4px; font-size: 1.02rem; display: flex; align-items: center; gap: 9px; }
+.card p { margin: 0; color: var(--suave); font-size: .94rem; }
+/* carpetas de colores del tema (mismo brillo y croma en OKLCH) */
+.carpeta { --h: 150; --c: oklch(70% .085 var(--h)); }
+.carpeta h3::before {
+  content: ""; flex: none; width: 24px; height: 20px;
+  background: linear-gradient(color-mix(in oklch, var(--c), white 22%), var(--c));
+  -webkit-mask: var(--forma) center / contain no-repeat; mask: var(--forma) center / contain no-repeat;
+  --forma: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 20'%3E%3Cpath d='M1 4a2 2 0 0 1 2-2h6l2 2h10a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2z'/%3E%3C/svg%3E");
+}
+.cards .carpeta:nth-child(8n+1) { --h: 25; } .cards .carpeta:nth-child(8n+2) { --h: 55; }
+.cards .carpeta:nth-child(8n+3) { --h: 95; } .cards .carpeta:nth-child(8n+4) { --h: 150; }
+.cards .carpeta:nth-child(8n+5) { --h: 185; } .cards .carpeta:nth-child(8n+6) { --h: 240; }
+.cards .carpeta:nth-child(8n+7) { --h: 290; } .cards .carpeta:nth-child(8n+8) { --h: 350; }
+
 ol.steps { list-style: none; padding: 0; margin: 0; counter-reset: s; display: grid; grid-template-columns: minmax(0, 1fr); gap: 16px; }
-ol.steps > li { min-width: 0; counter-increment: s; background: var(--panel); border: 1px solid var(--border); border-radius: 14px; padding: 16px 18px 18px 58px; position: relative; }
+ol.steps > li { min-width: 0; counter-increment: s; padding: 16px 18px 18px 60px; position: relative;
+  background: var(--vista); border: 1px solid var(--borde); border-radius: var(--radio); }
 ol.steps > li::before { content: counter(s); position: absolute; left: 16px; top: 16px; width: 30px; height: 30px; border-radius: 50%;
-  background: var(--accent-bg); color: var(--on-accent); font-weight: 700; display: grid; place-items: center; }
+  background: var(--sel); color: var(--sobre-sel); font-weight: 700; display: grid; place-items: center;
+  box-shadow: 0 0 0 3px var(--vista), 0 0 0 4px var(--borde); }
 ol.steps h3 { margin: 0 0 6px; font-size: 1.02rem; }
-ol.steps p { margin: 0 0 10px; color: var(--soft); }
-.code { position: relative; margin: 8px 0 0; }
-pre { margin: 0; background: var(--code); color: var(--code-text); border-radius: 10px; padding: 14px 84px 14px 16px; overflow-x: auto;
+ol.steps p { margin: 0 0 10px; color: var(--suave); }
+
+/* bloques de código: ventana con la barra de título Onda */
+.code { position: relative; margin: 8px 0 0; border: 1px solid var(--borde); border-radius: var(--radio); background: var(--superficie); overflow: hidden; }
+.code::before {
+  content: ""; display: block; height: 28px; border-bottom: 1px solid var(--borde); background: var(--superficie);
+  background-image:
+    radial-gradient(circle 6px at 18px 14px, var(--b-cerrar) 0 5.5px, transparent 6px),
+    radial-gradient(circle 6px at 38px 14px, var(--b-minimizar) 0 5.5px, transparent 6px),
+    radial-gradient(circle 6px at 58px 14px, var(--b-maximizar) 0 5.5px, transparent 6px);
+}
+pre { margin: 0; background: var(--vista); color: var(--texto); padding: 13px 16px; overflow-x: auto;
   font: .88rem/1.55 ui-monospace, "JetBrains Mono", "Fira Code", Consolas, monospace; }
-.copy { position: absolute; top: 8px; right: 8px; font: inherit; font-size: .78rem; cursor: pointer; color: var(--code-text);
-  background: transparent; border: 1px solid #77716d; border-radius: 7px; padding: 3px 10px; }
-.copy:hover { background: #ffffff1a; }
-.warn { border-left: 4px solid var(--coral); background: var(--panel); border-radius: 0 12px 12px 0; padding: 12px 16px; margin: 16px 0 0; }
+.copy { position: absolute; top: 3px; right: 6px; font: inherit; font-size: .76rem; cursor: pointer; color: var(--suave);
+  background: transparent; border: 1px solid var(--borde); border-radius: 999px; padding: 1px 10px; }
+.copy:hover { color: var(--texto); border-color: var(--acento); }
+.warn { border-left: 4px solid var(--coral); background: var(--vista); border-radius: 0 var(--radio) var(--radio) 0; padding: 12px 16px; margin: 16px 0 0; }
 .warn strong { color: var(--coral); }
-table { width: 100%; border-collapse: collapse; background: var(--panel); border: 1px solid var(--border); border-radius: 12px; overflow: hidden; font-size: .94rem; }
-th, td { text-align: left; padding: 9px 14px; border-bottom: 1px solid var(--border); vertical-align: top; }
-th { background: var(--surface); font-weight: 600; }
+
+table { width: 100%; border-collapse: collapse; background: var(--vista); border: 1px solid var(--borde); border-radius: var(--radio); overflow: hidden; font-size: .94rem; }
+th, td { text-align: left; padding: 9px 14px; border-bottom: 1px solid var(--borde); vertical-align: top; }
+th { background: var(--superficie); font-weight: 600; }
 tr:last-child td { border-bottom: 0; }
 .table-wrap { overflow-x: auto; }
-.swatches { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 10px; }
-.sw { width: 76px; border-radius: 10px; overflow: hidden; border: 1px solid var(--border); font-size: .72rem; text-align: center; background: var(--panel); }
-.sw i { display: block; height: 38px; }
-footer { border-top: 1px solid var(--border); background: var(--panel); margin-top: 24px; padding: 24px 0; color: var(--soft); font-size: .92rem; }
+
+/* paleta */
+.paleta { display: grid; grid-template-columns: repeat(auto-fill, minmax(104px, 1fr)); gap: 10px; margin-top: 4px; }
+.sw { border: 1px solid var(--borde); border-radius: 10px; overflow: hidden; background: var(--vista); font-size: .74rem; line-height: 1.3; }
+.sw i { display: block; height: 44px; }
+.sw span { display: block; padding: 5px 8px 6px; color: var(--suave); }
+.sw b { display: block; color: var(--texto); font-weight: 600; }
+.sub-titulo { margin: 22px 0 8px; font-size: 1rem; }
+
+footer { border-top: 1px solid var(--borde); background: var(--vista); margin-top: 24px; padding: 24px 0; color: var(--suave); font-size: .92rem; }
 footer .wrap { display: flex; flex-wrap: wrap; gap: 8px 22px; justify-content: space-between; }
+
 .en { display: none; }
 html[data-lang="en"] .es { display: none; }
 html[data-lang="en"] .en { display: initial; }
 html[data-lang="en"] div.en, html[data-lang="en"] p.en, html[data-lang="en"] li.en { display: block; }
+
 @media (max-width: 640px) {
   .shots { grid-template-columns: 1fr; }
-  header.top nav a.hide-m { display: none; }
-  .hero { padding-top: 40px; }
   .cards { grid-template-columns: minmax(0, 1fr); }
+  header.top nav a.hide-m { display: none; }
+  .estanque { --H: 560px; }
   ol.steps > li { padding-left: 54px; }
+  .barra .t { padding-left: 0; }
 }
 </style>
 </head>
@@ -128,18 +280,27 @@ html[data-lang="en"] div.en, html[data-lang="en"] p.en, html[data-lang="en"] li.
 </header>
 
 <main>
-<div class="wrap hero">
-  <img class="logo" src="img/logo.png" alt="Logo de Owee">
-  <div><span class="badge"><span class="es">Solo para KDE Plasma 6</span><span class="en">KDE Plasma 6 only</span></span></div>
-  <h1>OweeKoi</h1>
-  <p class="ver"><span class="es">Versión actual: <code>v2</code></span><span class="en">Current version: <code>v2</code></span></p>
-  <p class="lead">
-    <span class="es">Un tema propio para KDE: tinta y papel, ondas de estanque, kois que nadan en el protector y carpetas de colores. Claro y oscuro, sin descargar nada de terceros.</span>
-    <span class="en">A hand-made KDE theme: ink and paper, pond ripples, koi swimming in the screensaver and colored folders. Light and dark, nothing downloaded from third parties.</span>
-  </p>
-  <div class="btns">
-    <a class="btn main" href="#instalar"><span class="es">Cómo instalarlo</span><span class="en">How to install</span></a>
-    <a class="btn" href="https://github.com/oweeme/oweekoi/tree/v2">GitHub</a>
+<div class="estanque">
+  <span class="anillo"></span><span class="anillo"></span><span class="anillo"></span>
+  <div class="giro" aria-hidden="true" style="--cx:.36;--cy:.5;--orbita:.62;--sentido:-1;--fase:20;--periodo:60s"><div class="orb"><div class="koi k1"></div></div></div>
+  <div class="giro" aria-hidden="true" style="--cx:.64;--cy:.5;--orbita:.56;--sentido:1;--fase:200;--periodo:70s"><div class="orb"><div class="koi k2"></div></div></div>
+  <div class="giro" aria-hidden="true" style="--cx:.5;--cy:.54;--orbita:.85;--sentido:-1;--fase:110;--periodo:92s"><div class="orb"><div class="koi k3"></div></div></div>
+  <div class="ventana hero">
+    <div class="barra"><span class="t">OweeKoi · KDE Plasma 6</span><span class="escamas" aria-hidden="true"><i></i><i></i><i></i></span></div>
+    <div class="cuerpo">
+      <img class="logo" src="img/logo.png" alt="Logo de Owee">
+      <div><span class="badge"><span class="es">Solo para KDE Plasma 6</span><span class="en">KDE Plasma 6 only</span></span></div>
+      <h1>OweeKoi</h1>
+      <p class="ver"><span class="es">Versión actual: <code>v2</code></span><span class="en">Current version: <code>v2</code></span></p>
+      <p class="lead">
+        <span class="es">Un tema propio para KDE: tinta y papel, ondas de estanque, kois que nadan en el protector y carpetas de colores. Claro y oscuro, sin descargar nada de terceros.</span>
+        <span class="en">A hand-made KDE theme: ink and paper, pond ripples, koi swimming in the screensaver and colored folders. Light and dark, nothing downloaded from third parties.</span>
+      </p>
+      <div class="btns">
+        <a class="btn main" href="#instalar"><span class="es">Cómo instalarlo</span><span class="en">How to install</span></a>
+        <a class="btn" href="https://github.com/oweeme/oweekoi/tree/v2">GitHub</a>
+      </div>
+    </div>
   </div>
 </div>
 
@@ -159,26 +320,26 @@ html[data-lang="en"] div.en, html[data-lang="en"] p.en, html[data-lang="en"] li.
   <h2><span class="es">Qué incluye</span><span class="en">What's inside</span></h2>
   <p class="sub"><span class="es">Todo está hecho para Plasma 6 y se instala en tu carpeta personal, sin <code>sudo</code>.</span><span class="en">Everything is made for Plasma 6 and installs in your home folder, no <code>sudo</code> needed.</span></p>
   <div class="cards">
-    <div class="card"><h3><span class="es">Colores claro y oscuro</span><span class="en">Light and dark colors</span></h3><p><span class="es">Esquemas <code>OweeKoiLight</code> y <code>OweeKoiDark</code>. Nunca negro ni blanco puro; el texto cumple contraste AA.</span><span class="en"><code>OweeKoiLight</code> and <code>OweeKoiDark</code> schemes. Never pure black or white; text meets AA contrast.</span></p></div>
-    <div class="card"><h3><span class="es">Iconos y carpetas de colores</span><span class="en">Icons and colored folders</span></h3><p><span class="es">Tema de iconos propio y menú <em>Color de carpeta</em> en Dolphin.</span><span class="en">Own icon theme and a <em>Folder color</em> menu in Dolphin.</span></p></div>
-    <div class="card"><h3><span class="es">Estilo «Onda» de Plasma</span><span class="en">“Onda” Plasma style</span></h3><p><span class="es">Paneles, menús y diálogos con esquinas redondas y un halo de ondas en lugar de sombra pesada.</span><span class="en">Panels, menus and dialogs with rounded corners and a ripple halo instead of a heavy shadow.</span></p></div>
-    <div class="card"><h3><span class="es">Ventanas «Onda»</span><span class="en">“Onda” windows</span></h3><p><span class="es">Decorado de ventanas propio (Aurorae), en versión clara y oscura.</span><span class="en">Own window decoration (Aurorae), light and dark.</span></p></div>
-    <div class="card"><h3><span class="es">Protector de kois</span><span class="en">Koi screensaver</span></h3><p><span class="es">Los kois nadan al bloquear la pantalla y el fondo sigue al modo claro u oscuro.</span><span class="en">Koi swim when the screen locks, and the background follows light or dark mode.</span></p></div>
-    <div class="card"><h3><span class="es">Pantalla de inicio</span><span class="en">Splash screen</span></h3><p><span class="es">Animada, con el logo de Owee y los kois.</span><span class="en">Animated, with the Owee logo and the koi.</span></p></div>
-    <div class="card"><h3><span class="es">Punteros propios</span><span class="en">Own cursors</span></h3><p><span class="es">Flecha crema con ondas y el logo al cargar.</span><span class="en">Cream arrow with ripples and the logo while loading.</span></p></div>
-    <div class="card"><h3><span class="es">Barra superior tipo macOS</span><span class="en">macOS-style top bar</span></h3><p><span class="es">Menú global y reloj centrado. Se puede omitir con <code>--sin-barra</code>.</span><span class="en">Global menu and centered clock. Skip it with <code>--sin-barra</code>.</span></p></div>
-    <div class="card"><h3><span class="es">Animaciones suaves</span><span class="en">Smooth animations</span></h3><p><span class="es">Magic Lamp al minimizar. <code>owee-animaciones restaurar</code> devuelve las tuyas.</span><span class="en">Magic Lamp when minimizing. <code>owee-animaciones restaurar</code> brings yours back.</span></p></div>
-    <div class="card"><h3><span class="es">Claro/oscuro por hora</span><span class="en">Light/dark by time</span></h3><p><span class="es">El comando <code>owee-tema</code> y un temporizador opcional que cambia de modo con la hora.</span><span class="en">The <code>owee-tema</code> command and an optional timer that switches mode by time of day.</span></p></div>
-    <div class="card"><h3><span class="es">Konsole, Kate y Qt Creator</span><span class="en">Konsole, Kate and Qt Creator</span></h3><p><span class="es">Esquemas de sintaxis con contraste verificado (4,5:1 o más).</span><span class="en">Syntax schemes with verified contrast (4.5:1 or better).</span></p></div>
-    <div class="card"><h3><span class="es">Estilo de controles (opcional)</span><span class="en">Control style (optional)</span></h3><p><span class="es">Estilo Union de botones y campos, aún en desarrollo en KDE: se activa con <code>owee-estilo</code>.</span><span class="en">Union style for buttons and fields, still in development in KDE: enable it with <code>owee-estilo</code>.</span></p></div>
+    <div class="card carpeta"><h3><span class="es">Colores claro y oscuro</span><span class="en">Light and dark colors</span></h3><p><span class="es">Esquemas <code>OweeKoiLight</code> y <code>OweeKoiDark</code>. Nunca negro ni blanco puro; el texto cumple contraste AA.</span><span class="en"><code>OweeKoiLight</code> and <code>OweeKoiDark</code> schemes. Never pure black or white; text meets AA contrast.</span></p></div>
+    <div class="card carpeta"><h3><span class="es">Iconos y carpetas de colores</span><span class="en">Icons and colored folders</span></h3><p><span class="es">Tema de iconos propio y menú <em>Color de carpeta</em> en Dolphin.</span><span class="en">Own icon theme and a <em>Folder color</em> menu in Dolphin.</span></p></div>
+    <div class="card carpeta"><h3><span class="es">Estilo «Onda» de Plasma</span><span class="en">“Onda” Plasma style</span></h3><p><span class="es">Paneles, menús y diálogos con esquinas redondas y un halo de ondas en lugar de sombra pesada.</span><span class="en">Panels, menus and dialogs with rounded corners and a ripple halo instead of a heavy shadow.</span></p></div>
+    <div class="card carpeta"><h3><span class="es">Ventanas «Onda»</span><span class="en">“Onda” windows</span></h3><p><span class="es">Decorado de ventanas propio (Aurorae), en versión clara y oscura.</span><span class="en">Own window decoration (Aurorae), light and dark.</span></p></div>
+    <div class="card carpeta"><h3><span class="es">Protector de kois</span><span class="en">Koi screensaver</span></h3><p><span class="es">Los kois nadan al bloquear la pantalla y el fondo sigue al modo claro u oscuro.</span><span class="en">Koi swim when the screen locks, and the background follows light or dark mode.</span></p></div>
+    <div class="card carpeta"><h3><span class="es">Pantalla de inicio</span><span class="en">Splash screen</span></h3><p><span class="es">Animada, con el logo de Owee y los kois.</span><span class="en">Animated, with the Owee logo and the koi.</span></p></div>
+    <div class="card carpeta"><h3><span class="es">Punteros propios</span><span class="en">Own cursors</span></h3><p><span class="es">Flecha crema con ondas y el logo al cargar.</span><span class="en">Cream arrow with ripples and the logo while loading.</span></p></div>
+    <div class="card carpeta"><h3><span class="es">Barra superior tipo macOS</span><span class="en">macOS-style top bar</span></h3><p><span class="es">Menú global y reloj centrado. Se puede omitir con <code>--sin-barra</code>.</span><span class="en">Global menu and centered clock. Skip it with <code>--sin-barra</code>.</span></p></div>
+    <div class="card carpeta"><h3><span class="es">Animaciones suaves</span><span class="en">Smooth animations</span></h3><p><span class="es">Magic Lamp al minimizar. <code>owee-animaciones restaurar</code> devuelve las tuyas.</span><span class="en">Magic Lamp when minimizing. <code>owee-animaciones restaurar</code> brings yours back.</span></p></div>
+    <div class="card carpeta"><h3><span class="es">Claro/oscuro por hora</span><span class="en">Light/dark by time</span></h3><p><span class="es">El comando <code>owee-tema</code> y un temporizador opcional que cambia de modo con la hora.</span><span class="en">The <code>owee-tema</code> command and an optional timer that switches mode by time of day.</span></p></div>
+    <div class="card carpeta"><h3><span class="es">Konsole, Kate y Qt Creator</span><span class="en">Konsole, Kate and Qt Creator</span></h3><p><span class="es">Esquemas de sintaxis con contraste verificado (4,5:1 o más).</span><span class="en">Syntax schemes with verified contrast (4.5:1 or better).</span></p></div>
+    <div class="card carpeta"><h3><span class="es">Estilo de controles (opcional)</span><span class="en">Control style (optional)</span></h3><p><span class="es">Estilo Union de botones y campos, aún en desarrollo en KDE: se activa con <code>owee-estilo</code>.</span><span class="en">Union style for buttons and fields, still in development in KDE: enable it with <code>owee-estilo</code>.</span></p></div>
   </div>
-  <div class="swatches" aria-label="Paleta">
-    <div class="sw"><i style="background:#2d2a2c"></i>tinta</div>
-    <div class="sw"><i style="background:#f2eee2"></i>papel</div>
-    <div class="sw"><i style="background:#ece6d6"></i>crema</div>
-    <div class="sw"><i style="background:#8cc093"></i>verde</div>
-    <div class="sw"><i style="background:#f58a76"></i>coral</div>
-  </div>
+  <h3 class="sub-titulo"><span class="es">Paleta «papel» (modo claro)</span><span class="en">“Paper” palette (light mode)</span></h3>
+  <div class="paleta"><div class="sw"><i style="background:#f2eee2"></i><span><b>base</b>#f2eee2</span></div><div class="sw"><i style="background:#faf7ee"></i><span><b>vista</b>#faf7ee</span></div><div class="sw"><i style="background:#ebe6d6"></i><span><b>superficie</b>#ebe6d6</span></div><div class="sw"><i style="background:#d6cfbb"></i><span><b>borde</b>#d6cfbb</span></div><div class="sw"><i style="background:#252223"></i><span><b>texto</b>#252223</span></div><div class="sw"><i style="background:#9cd5a3"></i><span><b>selección</b>#9cd5a3</span></div><div class="sw"><i style="background:#c9412c"></i><span><b>coral</b>#c9412c</span></div><div class="sw"><i style="background:#1d62a0"></i><span><b>enlace</b>#1d62a0</span></div></div>
+  <h3 class="sub-titulo"><span class="es">Paleta «tinta» (modo oscuro)</span><span class="en">“Ink” palette (dark mode)</span></h3>
+  <div class="paleta"><div class="sw"><i style="background:#2d2a2c"></i><span><b>base</b>#2d2a2c</span></div><div class="sw"><i style="background:#262325"></i><span><b>vista</b>#262325</span></div><div class="sw"><i style="background:#353234"></i><span><b>superficie</b>#353234</span></div><div class="sw"><i style="background:#55514f"></i><span><b>borde</b>#55514f</span></div><div class="sw"><i style="background:#ece6d6"></i><span><b>texto</b>#ece6d6</span></div><div class="sw"><i style="background:#8cc093"></i><span><b>selección</b>#8cc093</span></div><div class="sw"><i style="background:#f58a76"></i><span><b>coral</b>#f58a76</span></div><div class="sw"><i style="background:#7cb9f0"></i><span><b>enlace</b>#7cb9f0</span></div></div>
+  <h3 class="sub-titulo"><span class="es">Carpetas de colores</span><span class="en">Folder colors</span></h3>
+  <div class="paleta"><div class="sw"><i style="background:oklch(70% .085 25)"></i><span><b>rojo</b>25°</span></div><div class="sw"><i style="background:oklch(70% .085 55)"></i><span><b>naranja</b>55°</span></div><div class="sw"><i style="background:oklch(70% .085 95)"></i><span><b>amarillo</b>95°</span></div><div class="sw"><i style="background:oklch(70% .085 150)"></i><span><b>verde</b>150°</span></div><div class="sw"><i style="background:oklch(70% .085 185)"></i><span><b>turquesa</b>185°</span></div><div class="sw"><i style="background:oklch(70% .085 240)"></i><span><b>azul</b>240°</span></div><div class="sw"><i style="background:oklch(70% .085 290)"></i><span><b>violeta</b>290°</span></div><div class="sw"><i style="background:oklch(70% .085 350)"></i><span><b>rosa</b>350°</span></div></div>
+  <p class="sub" style="margin-top:12px"><span class="es">Esta misma página usa estos colores, las esquinas de 12 px de las ventanas «Onda», la doble línea de onda y la tipografía Inter del tema.</span><span class="en">This very page uses these colors, the 12 px corners of the “Onda” windows, the double ripple line and the theme's Inter typeface.</span></p>
 </section>
 
 <section id="requisitos">
