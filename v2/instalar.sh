@@ -103,7 +103,9 @@ mkdir -p "$SHARE/color-schemes" "$SHARE/icons" "$SHARE/wallpapers" "$SHARE/plasm
 cp "$AQUI"/colores/OweeKoi*.colors "$SHARE/color-schemes/"
 rm -rf "$SHARE/icons/OweeKoi";                  cp -r "$AQUI/iconos/OweeKoi" "$SHARE/icons/"
 mkdir -p "$SHARE/union/styles"; rm -rf "$SHARE/union/styles/oweekoi"; cp -r "$AQUI/estilo/oweekoi" "$SHARE/union/styles/"
-rm -rf "$SHARE/icons/OweeKoi-Punteros";         cp -r "$AQUI/punteros/OweeKoi-Punteros" "$SHARE/icons/"
+# Los cursores van a ~/.icons: libXcursor 1.2.1 (Ubuntu 24.04) y las herramientas de KDE no miran en ~/.local/share/icons
+mkdir -p "$HOME/.icons"; rm -rf "$SHARE/icons/OweeKoi-Punteros" "$HOME/.icons/OweeKoi-Punteros"
+cp -r "$AQUI/punteros/OweeKoi-Punteros" "$HOME/.icons/"
 command -v gtk-update-icon-cache >/dev/null 2>&1 &&
   gtk-update-icon-cache -f -t "$SHARE/icons/OweeKoi" >/dev/null 2>&1 || true
 rm -rf "$SHARE/wallpapers/OweeKoi-Estanque";    cp -r "$AQUI/fondos/OweeKoi-Estanque" "$SHARE/wallpapers/"

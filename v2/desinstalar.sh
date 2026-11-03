@@ -24,7 +24,7 @@ fi
 
 echo "==> Quitando archivos de OweeKoi 2"
 rm -rf "$SHARE"/color-schemes/OweeKoiDark.colors "$SHARE"/color-schemes/OweeKoiLight.colors \
-       "$SHARE/icons/OweeKoi" "$SHARE/icons/OweeKoi-Punteros" "$SHARE/union/styles/oweekoi" "$SHARE/wallpapers/OweeKoi-Estanque" \
+       "$SHARE/icons/OweeKoi" "$SHARE/icons/OweeKoi-Punteros" "$HOME/.icons/OweeKoi-Punteros" "$SHARE/union/styles/oweekoi" "$SHARE/wallpapers/OweeKoi-Estanque" \
        "$SHARE/plasma/wallpapers/org.owee.koi" "$SHARE/plasma/desktoptheme/OweeKoi-Onda" \
        "$SHARE"/plasma/look-and-feel/org.owee.koi "$SHARE"/plasma/look-and-feel/org.owee.koi.oscuro \
        "$SHARE"/plasma/look-and-feel/org.owee.koi.claro \

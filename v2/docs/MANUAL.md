@@ -192,13 +192,14 @@ Para comprobar el tamaño de las piezas de un SVG de marco: `./v2/herramientas/p
 | Se perdió tu barra o tu dock tras aplicar un tema | El tema trajo su propia disposición | Restaura `plasma-org.kde.plasma.desktop-appletsrc` de `~/.local/share/oweekoi/` |
 | El estilo de controles se ve raro | Union está en desarrollo | `owee-estilo desactivar` y cierra sesión |
 | El cursor volvió a Breeze | Algo lo reescribió | Elígelo en *Punteros*, con las aplicaciones cerradas |
+| `plasma-apply-cursortheme` dice que no encuentra `OweeKoi-Punteros` | KDE solo busca cursores en `~/.icons` y `/usr/share/icons`, no en `~/.local/share/icons` | El instalador ya lo copia a `~/.icons/OweeKoi-Punteros`; si lo instalaste a mano, cópialo ahí |
 
 ## 7. Archivos que toca el instalador
 
-**En tu carpeta personal** (con respaldo): `~/.local/share/{color-schemes, icons/OweeKoi, icons/OweeKoi-Punteros,
+**En tu carpeta personal** (con respaldo): `~/.local/share/{color-schemes, icons/OweeKoi,
 wallpapers/OweeKoi-Estanque, plasma/wallpapers/org.owee.koi, plasma/desktoptheme/OweeKoi-Onda,
 plasma/look-and-feel/org.owee.koi*, aurorae/themes/OweeKoi-Onda-*, union/styles/oweekoi, kio/servicemenus,
-konsole, org.kde.syntax-highlighting/themes}`, `~/.config/QtProject/qtcreator/styles` y `~/.local/bin/owee-*`.
+konsole, org.kde.syntax-highlighting/themes}`, `~/.config/QtProject/qtcreator/styles`, `~/.icons/OweeKoi-Punteros` y `~/.local/bin/owee-*`.
 Cambia los ajustes `kdeglobals`, `kcminputrc`, `plasmarc`, `kwinrc`, `ksplashrc`, `kscreenlockerrc` y la barra
 superior en `plasma-org.kde.plasma.desktop-appletsrc`.
 
